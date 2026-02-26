@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Привет, пупсик</title>
+  <style>
+    :root{--bg:#0b1020;--card:#131b34;--text:#e9eefc;--muted:#9fb1e6;--accent:#7c9cff}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Arial,sans-serif;background:radial-gradient(circle at 20% 20%,#1b2450 0,#0b1020 55%);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:20px}
+    .card{width:min(680px,100%);background:var(--card);border:1px solid #2a3768;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+    h1{margin:0 0 14px;font-size:clamp(22px,4vw,32px)}
+    p{color:var(--muted);margin:0 0 16px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    input{flex:1;min-width:220px;padding:12px 14px;border-radius:12px;border:1px solid #32437c;background:#0f1730;color:var(--text);font-size:16px}
+    button{padding:12px 16px;border:0;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+    button:hover{filter:brightness(1.05)}
+    .result{margin-top:18px;padding:14px;border-radius:12px;background:#0f1730;border:1px solid #2a3768;display:none}
+    .result h2{margin:0 0 12px;font-size:26px}
+    .result img{max-width:100%;border-radius:12px;border:1px solid #384a85;display:block}
+    .back{display:inline-block;margin-top:16px;color:#9ec5ff;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Тестовый сайт</h1>
+    <p>Введи имя — и получишь персональное приветствие с мемом 😄</p>
+
+    <div class="row">
+      <input id="nameInput" type="text" placeholder="Введите имя" />
+      <button id="goBtn">Сгенерировать</button>
+    </div>
+
+    <div id="result" class="result">
+      <h2 id="helloText"></h2>
+      <img src="./assets/meme.jpg" alt="мем" />
+    </div>
+
+    <a class="back" href="../">← Назад к списку проектов</a>
+  </div>
+
+  <script>
+    const input = document.getElementById('nameInput');
+    const btn = document.getElementById('goBtn');
+    const result = document.getElementById('result');
+    const hello = document.getElementById('helloText');
+
+    function render() {
+      const name = (input.value || '').trim();
+      if (!name) {
+        result.style.display = 'none';
+        return;
+      }
+      hello.textContent = `привет, ${name}`;
+      result.style.display = 'block';
+    }
+
+    btn.addEventListener('click', render);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') render(); });
+  </script>
+</body>
+</html>
