@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Коктейльная карта</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f0f12;
+      --card: #1a1b20;
+      --text: #f4f4f6;
+      --muted: #b4b7c2;
+      --accent: #7c5cff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at 20% 0%, #20243a 0%, var(--bg) 48%);
+      color: var(--text);
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .container { width: min(1100px, 100%); text-align: center; }
+    .title { font-size: clamp(22px, 3.2vw, 36px); margin: 0 0 12px; }
+    .subtitle { margin: 0 0 20px; color: var(--muted); font-size: clamp(14px, 1.8vw, 18px); }
+    .menu-image {
+      width: 100%;
+      max-width: 900px;
+      border-radius: 16px;
+      box-shadow: 0 16px 44px rgba(0,0,0,.42);
+      border: 1px solid rgba(255,255,255,.08);
+      background: #111;
+    }
+    .age-gate {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,8,12,.88);
+      backdrop-filter: blur(6px);
+      display: grid;
+      place-items: center;
+      z-index: 10;
+      padding: 18px;
+    }
+    .gate-card {
+      width: min(560px, 100%);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+    }
+    .gate-meme {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 14px;
+    }
+    .buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="age-gate" id="ageGate" role="dialog" aria-modal="true">
+    <div class="gate-card">
+      <img class="gate-meme" src="./assets/age-meme.jpg" alt="Проверка 18+" />
+      <div class="buttons">
+        <button data-enter>Да</button>
+        <button data-enter>Конечно</button>
+        <button data-enter>Сам знаешь</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container" id="content" aria-hidden="true">
+    <h1 class="title">Коктейльная карта</h1>
+    <p class="subtitle">Авторские коктейли · Special Menu</p>
+    <img class="menu-image" src="./assets/menu.jpg" alt="Меню на 8 авторских коктейлей" />
+  </main>
+
+  <script>
+    const gate = document.getElementById('ageGate');
+    const content = document.getElementById('content');
+    const KEY = 'barmen_age_confirmed_v2';
+
+    function unlock() {
+      gate.classList.add('hidden');
+      content.setAttribute('aria-hidden', 'false');
+    }
+
+    if (localStorage.getItem(KEY) === 'yes') unlock();
+
+    document.querySelectorAll('[data-enter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        localStorage.setItem(KEY, 'yes');
+        unlock();
+      });
+    });
+  </script>
+</body>
+</html>
