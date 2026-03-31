@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>MedTrack</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Telegram Mini App prototype</p>
+        <h1>Coach</h1>
+        <p class="subtitle">Тренировки, анализы, приёмы и динамика — в одном месте.</p>
+      </div>
+      <div class="hero-actions">
+        <button id="exportBtn" class="ghost">Экспорт JSON</button>
+        <label class="ghost file-btn">
+          Импорт JSON
+          <input id="importInput" type="file" accept="application/json" hidden />
+        </label>
+      </div>
+    </header>
+
+    <section class="cards" id="summaryCards"></section>
+
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="dashboard">Сегодня</button>
+      <button class="tab" data-tab="workouts">Тренировки</button>
+      <button class="tab" data-tab="labs">Анализы</button>
+      <button class="tab" data-tab="visits">Приёмы</button>
+      <button class="tab" data-tab="documents">Документы</button>
+      <button class="tab" data-tab="insights">Динамика</button>
+    </nav>
+
+    <main>
+      <section class="panel active" data-panel="dashboard">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-head">
+              <h2>Активные протоколы</h2>
+              <span class="badge">v1</span>
+            </div>
+            <div id="protocolList" class="stack"></div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Последние события</h2>
+            </div>
+            <div id="timeline" class="timeline"></div>
+          </article>
+        </div>
+
+        <div class="grid two">
+          <article class="card">
+            <div class="card-head">
+              <h2>Быстрый лог боли</h2>
+            </div>
+            <form id="symptomForm" class="form compact">
+              <div class="grid two">
+                <label>
+                  <span>Дата</span>
+                  <input name="date" type="date" required />
+                </label>
+                <label>
+                  <span>Зона</span>
+                  <select name="zone">
+                    <option value="Поясница">Поясница</option>
+                    <option value="Грудной отдел">Грудной отдел</option>
+                    <option value="Левый голеностоп">Левый голеностоп</option>
+                    <option value="Правый голеностоп">Правый голеностоп</option>
+                  </select>
+                </label>
+              </div>
+              <div class="grid two">
+                <label>
+                  <span>Боль (0-10)</span>
+                  <input name="pain" type="number" min="0" max="10" step="1" required />
+                </label>
+                <label>
+                  <span>Когда</span>
+                  <select name="moment">
+                    <option value="утро">утро</option>
+                    <option value="день">день</option>
+                    <option value="вечер">вечер</option>
+                    <option value="после тренировки">после тренировки</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                <span>Комментарий</span>
+                <textarea name="note" rows="3" placeholder="например: после шифта прострел слева в грудном отделе"></textarea>
+              </label>
+              <button type="submit" class="primary">Сохранить симптом</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Симптомы — последние записи</h2>
+            </div>
+            <div id="symptomsList" class="stack"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="workouts">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-head">
+              <h2>Новая тренировка</h2>
+            </div>
+            <form id="workoutForm" class="form">
+              <div class="grid two">
+                <label>
+                  <span>Дата</span>
+                  <input name="date" type="date" required />
+                </label>
+                <label>
+                  <span>Категория</span>
+                  <select name="category">
+                    <option value="Голеностопы">Голеностопы</option>
+                    <option value="Спина">Спина</option>
+                    <option value="Общее">Общее</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                <span>Упражнение</span>
+                <input name="exercise" type="text" required placeholder="Жим платформы 1 ногой" />
+              </label>
+              <div class="grid three">
+                <label>
+                  <span>Сторона</span>
+                  <select name="side">
+                    <option value="-">—</option>
+                    <option value="левая">левая</option>
+                    <option value="правая">правая</option>
+                    <option value="обе">обе</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Вес, кг</span>
+                  <input name="weightKg" type="number" min="0" step="0.5" placeholder="30" />
+                </label>
+                <label>
+                  <span>Подходы × повторы</span>
+                  <input name="setsReps" type="text" placeholder="3x10" />
+                </label>
+              </div>
+              <div class="grid three">
+                <label>
+                  <span>Длительность, сек</span>
+                  <input name="durationSec" type="number" min="0" step="1" placeholder="20" />
+                </label>
+                <label>
+                  <span>Боль до</span>
+                  <input name="painBefore" type="number" min="0" max="10" step="1" placeholder="2" />
+                </label>
+                <label>
+                  <span>Боль после</span>
+                  <input name="painAfter" type="number" min="0" max="10" step="1" placeholder="3" />
+                </label>
+              </div>
+              <label>
+                <span>Комментарий</span>
+                <textarea name="note" rows="3" placeholder="например: на 40 кг чувствуется спина, оставил 30 кг"></textarea>
+              </label>
+              <button type="submit" class="primary">Сохранить тренировку</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="card-head inline-wrap">
+              <h2>Последние тренировки</h2>
+              <select id="workoutFilter">
+                <option value="all">Все</option>
+                <option value="Голеностопы">Голеностопы</option>
+                <option value="Спина">Спина</option>
+                <option value="Общее">Общее</option>
+              </select>
+            </div>
+            <div id="workoutList" class="stack"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="labs">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-head">
+              <h2>Новый анализ</h2>
+            </div>
+            <form id="labForm" class="form">
+              <div class="grid two">
+                <label>
+                  <span>Дата</span>
+                  <input name="date" type="date" required />
+                </label>
+                <label>
+                  <span>Панель</span>
+                  <input name="panel" type="text" placeholder="Щитовидка / воспаление / биохимия" />
+                </label>
+              </div>
+              <div class="grid two">
+                <label>
+                  <span>Показатель</span>
+                  <input name="marker" type="text" required placeholder="ТТГ" />
+                </label>
+                <label>
+                  <span>Значение</span>
+                  <input name="value" type="number" step="0.001" required placeholder="26.5" />
+                </label>
+              </div>
+              <div class="grid three">
+                <label>
+                  <span>Ед. изм.</span>
+                  <input name="unit" type="text" placeholder="мкМЕ/мл" />
+                </label>
+                <label>
+                  <span>Нижняя граница</span>
+                  <input name="refMin" type="number" step="0.001" placeholder="0.27" />
+                </label>
+                <label>
+                  <span>Верхняя граница</span>
+                  <input name="refMax" type="number" step="0.001" placeholder="4.2" />
+                </label>
+              </div>
+              <label>
+                <span>Комментарий</span>
+                <textarea name="note" rows="3" placeholder="например: на фоне Эутирокса"></textarea>
+              </label>
+              <button type="submit" class="primary">Сохранить анализ</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="card-head inline-wrap">
+              <h2>Динамика анализов</h2>
+              <select id="markerSelect"></select>
+            </div>
+            <div id="labChart" class="chart"></div>
+            <div id="labTable" class="stack compact-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="visits">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-head">
+              <h2>Новый приём</h2>
+            </div>
+            <form id="visitForm" class="form">
+              <div class="grid two">
+                <label>
+                  <span>Дата</span>
+                  <input name="date" type="date" required />
+                </label>
+                <label>
+                  <span>Врач</span>
+                  <input name="doctor" type="text" required placeholder="Темичев Г.В." />
+                </label>
+              </div>
+              <div class="grid two">
+                <label>
+                  <span>Специализация</span>
+                  <input name="specialty" type="text" placeholder="ЛФК / ревматолог / ортопед" />
+                </label>
+                <label>
+                  <span>Клиника</span>
+                  <input name="clinic" type="text" placeholder="Клиника Темичева" />
+                </label>
+              </div>
+              <label>
+                <span>Жалобы</span>
+                <textarea name="complaints" rows="3"></textarea>
+              </label>
+              <label>
+                <span>Выводы</span>
+                <textarea name="findings" rows="4"></textarea>
+              </label>
+              <label>
+                <span>План / назначения</span>
+                <textarea name="plan" rows="4"></textarea>
+              </label>
+              <button type="submit" class="primary">Сохранить приём</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>История приёмов</h2>
+            </div>
+            <div id="visitList" class="stack"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="documents">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-head">
+              <h2>Новый документ</h2>
+            </div>
+            <form id="documentForm" class="form">
+              <div class="grid two">
+                <label>
+                  <span>Дата</span>
+                  <input name="date" type="date" required />
+                </label>
+                <label>
+                  <span>Тип</span>
+                  <select name="type">
+                    <option value="PDF">PDF</option>
+                    <option value="МРТ">МРТ</option>
+                    <option value="Анализы">Анализы</option>
+                    <option value="Выписка">Выписка</option>
+                    <option value="Прочее">Прочее</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                <span>Название</span>
+                <input name="title" type="text" required placeholder="Приём Темичева 30.03.2026" />
+              </label>
+              <div class="grid two">
+                <label>
+                  <span>Зона / тема</span>
+                  <input name="area" type="text" placeholder="Голеностопы, спина" />
+                </label>
+                <label>
+                  <span>Источник / файл</span>
+                  <input name="source" type="text" placeholder="Telegram PDF / Medsi / Helix" />
+                </label>
+              </div>
+              <label>
+                <span>Короткая выжимка</span>
+                <textarea name="summary" rows="4"></textarea>
+              </label>
+              <button type="submit" class="primary">Сохранить документ</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Индекс документов</h2>
+            </div>
+            <div id="documentList" class="stack"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="insights">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-head inline-wrap">
+              <h2>Прогресс по упражнению</h2>
+              <select id="exerciseSelect"></select>
+            </div>
+            <div id="exerciseChart" class="chart"></div>
+            <div id="exerciseStats" class="stack compact-list"></div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Автовыводы</h2>
+            </div>
+            <div id="insightsList" class="stack"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <template id="itemTemplate">
+    <article class="item"></article>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>
