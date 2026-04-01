@@ -157,7 +157,7 @@ h1 { margin-bottom: 8px; font-size: clamp(30px, 6vw, 44px); }
 
 .form { display: grid; gap: 14px; }
 .form.compact { gap: 12px; }
-label { display: grid; gap: 8px; }
+label { display: grid; gap: 8px; min-width: 0; }
 label > span { color: var(--text-soft); font-size: 14px; }
 input, select, textarea {
   width: 100%;
@@ -170,6 +170,11 @@ input, select, textarea {
 }
 textarea { resize: vertical; min-height: 96px; }
 input::placeholder, textarea::placeholder { color: rgba(213, 225, 255, 0.45); }
+input[type="date"] {
+  font-size: 13px;
+  padding-right: 8px;
+  min-width: 0;
+}
 input:focus, select:focus, textarea:focus {
   border-color: rgba(96, 165, 250, 0.5);
   box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.12);
