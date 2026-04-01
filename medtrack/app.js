@@ -176,11 +176,12 @@ function initTelegram() {
   tg.expand();
 
   const theme = tg.themeParams || {};
-  if (theme.bg_color) document.documentElement.style.setProperty('--bg', theme.bg_color);
-  if (theme.secondary_bg_color) document.documentElement.style.setProperty('--panel', theme.secondary_bg_color);
-  if (theme.text_color) document.documentElement.style.setProperty('--text', theme.text_color);
-  if (theme.hint_color) document.documentElement.style.setProperty('--muted', theme.hint_color);
+  document.documentElement.dataset.tgScheme = tg.colorScheme || 'dark';
+
+  // Держим собственную контрастную палитру, а из Telegram берём только акцентные цвета.
+  // Иначе в iOS Mini App может приехать тёмный текст на тёмные карточки.
   if (theme.button_color) document.documentElement.style.setProperty('--accent', theme.button_color);
+  if (theme.button_text_color) document.documentElement.style.setProperty('--accent-text', theme.button_text_color);
 }
 
 function bindTabs() {
