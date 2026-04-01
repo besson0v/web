@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'medtrack-data-v1';
+const STORAGE_KEY = 'medtrack-data-v2';
 
 const seedData = {
   protocols: [
@@ -11,7 +11,7 @@ const seedData = {
         'Удержание конца амплитуды стоя на 1 ноге — 4×20 сек, цель со временем 60 кг',
         'Вставания с тумбы 50 см на 1 ноге — 3×10',
         'Жим платформы 1 ногой — 3×10',
-        'Румынская тяга на 1 ноге с гирей — 3×10',
+        'Румынская тяга на 1 ногой с гирей — 3×10',
         'Подъемы на носок на 1 ноге — 3×10, прогрессия до 20',
         'Ходьба на носках с палкой над головой — 4×15 сек',
         'Пого-прыжки на 2 ногах — 4×15 сек'
@@ -39,7 +39,32 @@ const seedData = {
       ]
     }
   ],
-  workoutLogs: [],
+  workoutLogs: [
+    {
+      id: uid(),
+      date: '2026-03-31',
+      category: 'Плавание',
+      durationMin: 45,
+      note: 'Спокойная работа, без перегруза.',
+      blocks: [
+        { id: uid(), type: 'distance', title: 'Разминка вольный стиль', distanceM: 200, durationMin: 5, note: '' },
+        { id: uid(), type: 'interval', title: 'Вольный стиль', repeats: 4, distanceM: 200, note: 'ровный темп' },
+        { id: uid(), type: 'interval', title: 'Вольный стиль', repeats: 6, distanceM: 100, note: 'короче, но интенсивнее' }
+      ]
+    },
+    {
+      id: uid(),
+      date: '2026-03-30',
+      category: 'Голеностопы',
+      durationMin: 30,
+      note: 'Оставил рабочий вес 30 кг из-за реакции спины.',
+      blocks: [
+        { id: uid(), type: 'strength', title: 'Жим платформы 1 ногой', side: 'левая', sets: 3, reps: 10, weightKg: 30, note: '' },
+        { id: uid(), type: 'strength', title: 'Жим платформы 1 ногой', side: 'правая', sets: 3, reps: 10, weightKg: 30, note: '' },
+        { id: uid(), type: 'strength', title: 'Подъёмы на носок на 1 ноге', side: 'обе', sets: 3, reps: 10, note: '' }
+      ]
+    }
+  ],
   symptomLogs: [
     {
       id: uid(),
@@ -140,16 +165,22 @@ const seedData = {
 
 const state = loadState();
 const elements = {};
+const workoutEditor = {
+  editingSessionId: null
+};
 
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
+  normalizeState();
   collectElements();
   initTelegram();
   bindTabs();
   bindForms();
   bindUtilities();
   setDefaultDates();
+  ensureWorkoutBlockRows();
+  updateWorkoutFormMode();
   renderAll();
 }
 
@@ -157,7 +188,8 @@ function collectElements() {
   [
     'summaryCards', 'protocolList', 'timeline', 'symptomsList', 'workoutList', 'labChart', 'labTable',
     'visitList', 'documentList', 'insightsList', 'exerciseChart', 'exerciseStats', 'markerSelect',
-    'exerciseSelect', 'workoutFilter', 'exportBtn', 'importInput'
+    'exerciseSelect', 'workoutFilter', 'exportBtn', 'importInput', 'addWorkoutBlockBtn',
+    'workoutBlocks', 'workoutCategoryList', 'workoutSubmitBtn', 'workoutCancelEditBtn'
   ].forEach((id) => elements[id] = document.getElementById(id));
 
   elements.forms = {
@@ -169,6 +201,10 @@ function collectElements() {
   };
 }
 
+function normalizeState() {
+  state.workoutLogs = (state.workoutLogs || []).map(normalizeWorkoutSession);
+}
+
 function initTelegram() {
   const tg = window.Telegram?.WebApp;
   if (!tg) return;
@@ -177,9 +213,6 @@ function initTelegram() {
 
   const theme = tg.themeParams || {};
   document.documentElement.dataset.tgScheme = tg.colorScheme || 'dark';
-
-  // Держим собственную контрастную палитру, а из Telegram берём только акцентные цвета.
-  // Иначе в iOS Mini App может приехать тёмный текст на тёмные карточки.
   if (theme.button_color) document.documentElement.style.setProperty('--accent', theme.button_color);
   if (theme.button_text_color) document.documentElement.style.setProperty('--accent-text', theme.button_text_color);
 }
@@ -210,19 +243,29 @@ function bindForms() {
   elements.forms.workout.addEventListener('submit', (event) => {
     event.preventDefault();
     const data = formToObject(event.target);
-    state.workoutLogs.unshift({
-      id: uid(),
-      ...data,
-      weightKg: toNullableNumber(data.weightKg),
-      durationSec: toNullableNumber(data.durationSec),
-      painBefore: toNullableNumber(data.painBefore),
-      painAfter: toNullableNumber(data.painAfter)
-    });
+    const session = buildWorkoutSessionFromForm(data);
+    if (!session.blocks.length) {
+      toast('Добавь хотя бы один блок');
+      return;
+    }
+
+    if (workoutEditor.editingSessionId) {
+      const index = state.workoutLogs.findIndex((item) => item.id === workoutEditor.editingSessionId);
+      if (index >= 0) {
+        state.workoutLogs[index] = { ...session, id: workoutEditor.editingSessionId };
+      }
+      saveState();
+      resetWorkoutForm();
+      renderAll();
+      toast('Тренировка обновлена');
+      return;
+    }
+
+    state.workoutLogs.unshift(session);
     saveState();
-    event.target.reset();
-    setDefaultDates();
+    resetWorkoutForm();
     renderAll();
-    toast('Тренировка сохранена');
+    toast('Тренировка-сессия сохранена');
   });
 
   elements.forms.lab.addEventListener('submit', (event) => {
@@ -271,6 +314,12 @@ function bindUtilities() {
   elements.markerSelect.addEventListener('change', renderLabs);
   elements.exerciseSelect.addEventListener('change', renderExerciseInsights);
   elements.workoutFilter.addEventListener('change', renderWorkouts);
+  elements.addWorkoutBlockBtn?.addEventListener('click', () => addWorkoutBlockRow());
+  elements.workoutBlocks?.addEventListener('click', handleWorkoutBlockClick);
+  elements.workoutBlocks?.addEventListener('change', handleWorkoutBlockTypeChange);
+  elements.workoutList?.addEventListener('click', handleWorkoutListClick);
+  elements.forms.workout.querySelector('[name="category"]')?.addEventListener('input', renderWorkoutLibrary);
+  elements.workoutCancelEditBtn?.addEventListener('click', resetWorkoutForm);
 }
 
 function setDefaultDates() {
@@ -279,6 +328,269 @@ function setDefaultDates() {
     const dateInput = form.querySelector('input[type="date"]');
     if (dateInput && !dateInput.value) dateInput.value = today;
   });
+}
+
+function ensureWorkoutBlockRows() {
+  if (!elements.workoutBlocks?.children.length) {
+    addWorkoutBlockRow('strength');
+    addWorkoutBlockRow('distance');
+  }
+}
+
+function resetWorkoutBlocks() {
+  elements.workoutBlocks.innerHTML = '';
+  ensureWorkoutBlockRows();
+}
+
+function resetWorkoutForm() {
+  workoutEditor.editingSessionId = null;
+  elements.forms.workout.reset();
+  setDefaultDates();
+  resetWorkoutBlocks();
+  updateWorkoutFormMode();
+  renderWorkoutLibrary();
+}
+
+function updateWorkoutFormMode() {
+  const isEditing = Boolean(workoutEditor.editingSessionId);
+  if (elements.workoutSubmitBtn) {
+    elements.workoutSubmitBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить тренировку';
+  }
+  if (elements.workoutCancelEditBtn) {
+    elements.workoutCancelEditBtn.hidden = !isEditing;
+  }
+}
+
+function addWorkoutBlockRow(type = 'strength', values = {}) {
+  if (!elements.workoutBlocks) return;
+  const row = document.createElement('article');
+  row.className = 'workout-block';
+  row.dataset.blockId = values.id || uid();
+  row.innerHTML = `
+    <div class="workout-block-head">
+      <strong>Блок</strong>
+      <button type="button" class="ghost danger-ghost" data-action="remove-block">Удалить</button>
+    </div>
+
+    <div class="grid two">
+      <label>
+        <span>Тип блока</span>
+        <select name="blockType">
+          <option value="strength" ${type === 'strength' ? 'selected' : ''}>Силовой / упражнение</option>
+          <option value="interval" ${type === 'interval' ? 'selected' : ''}>Интервал / отрезок</option>
+          <option value="distance" ${type === 'distance' ? 'selected' : ''}>Свободный временной / дистанционный</option>
+        </select>
+      </label>
+      <label>
+        <span>Название</span>
+        <input name="blockTitle" type="text" list="exerciseLibrary" value="${escapeAttr(values.title || '')}" placeholder="Например: жим платформы / вольный стиль / разминка" />
+      </label>
+    </div>
+
+    <div class="block-fields"></div>
+  `;
+  elements.workoutBlocks.appendChild(row);
+  renderWorkoutBlockFields(row, type, values);
+}
+
+function renderWorkoutBlockFields(row, type, values = {}) {
+  const fields = row.querySelector('.block-fields');
+  if (!fields) return;
+
+  if (type === 'strength') {
+    fields.innerHTML = `
+      <div class="grid four">
+        <label>
+          <span>Подходы</span>
+          <input name="sets" type="number" min="0" step="1" value="${escapeAttr(values.sets ?? '')}" placeholder="3" />
+        </label>
+        <label>
+          <span>Количество / повторы</span>
+          <input name="reps" type="number" min="0" step="1" value="${escapeAttr(values.reps ?? '')}" placeholder="10" />
+        </label>
+        <label>
+          <span>Вес, кг</span>
+          <input name="weightKg" type="number" min="0" step="0.5" value="${escapeAttr(values.weightKg ?? '')}" placeholder="30" />
+        </label>
+        <label>
+          <span>Сторона</span>
+          <select name="side">
+            <option value="-" ${(values.side || '-') === '-' ? 'selected' : ''}>—</option>
+            <option value="левая" ${values.side === 'левая' ? 'selected' : ''}>левая</option>
+            <option value="правая" ${values.side === 'правая' ? 'selected' : ''}>правая</option>
+            <option value="обе" ${values.side === 'обе' ? 'selected' : ''}>обе</option>
+          </select>
+        </label>
+      </div>
+      <label>
+        <span>Заметка блока</span>
+        <textarea name="blockNote" rows="2" placeholder="Например: на 40 кг чувствуется спина, оставил 30 кг">${escapeHtml(values.note || '')}</textarea>
+      </label>
+    `;
+    return;
+  }
+
+  if (type === 'interval') {
+    fields.innerHTML = `
+      <div class="grid four">
+        <label>
+          <span>Повторов</span>
+          <input name="repeats" type="number" min="0" step="1" value="${escapeAttr(values.repeats ?? '')}" placeholder="4" />
+        </label>
+        <label>
+          <span>Время, сек</span>
+          <input name="durationSec" type="number" min="0" step="1" value="${escapeAttr(values.durationSec ?? '')}" placeholder="20" />
+        </label>
+        <label>
+          <span>Дистанция, м</span>
+          <input name="distanceM" type="number" min="0" step="1" value="${escapeAttr(values.distanceM ?? '')}" placeholder="200" />
+        </label>
+        <label>
+          <span>Отдых / пауза, сек</span>
+          <input name="restSec" type="number" min="0" step="1" value="${escapeAttr(values.restSec ?? '')}" placeholder="40" />
+        </label>
+      </div>
+      <label>
+        <span>Заметка блока</span>
+        <textarea name="blockNote" rows="2" placeholder="Например: 20 сек максимум + 40 сек расслабленно">${escapeHtml(values.note || '')}</textarea>
+      </label>
+    `;
+    return;
+  }
+
+  fields.innerHTML = `
+    <div class="grid three">
+      <label>
+        <span>Длительность, мин</span>
+        <input name="durationMin" type="number" min="0" step="1" value="${escapeAttr(values.durationMin ?? '')}" placeholder="10" />
+      </label>
+      <label>
+        <span>Дистанция, м</span>
+        <input name="distanceM" type="number" min="0" step="1" value="${escapeAttr(values.distanceM ?? '')}" placeholder="200" />
+      </label>
+      <label>
+        <span>Интенсивность / темп</span>
+        <input name="intensity" type="text" value="${escapeAttr(values.intensity || '')}" placeholder="лёгкий / средний / максимум" />
+      </label>
+    </div>
+    <label>
+      <span>Заметка блока</span>
+      <textarea name="blockNote" rows="2" placeholder="Например: 5 минут лёгкий бег">${escapeHtml(values.note || '')}</textarea>
+    </label>
+  `;
+}
+
+function handleWorkoutBlockClick(event) {
+  const button = event.target.closest('[data-action="remove-block"]');
+  if (!button) return;
+  const block = button.closest('.workout-block');
+  if (!block) return;
+  if (elements.workoutBlocks.children.length <= 1) {
+    toast('Нужен хотя бы один блок');
+    return;
+  }
+  block.remove();
+}
+
+function handleWorkoutListClick(event) {
+  const action = event.target.closest('[data-action]');
+  if (!action) return;
+
+  const sessionId = action.dataset.sessionId;
+  const blockId = action.dataset.blockId;
+
+  if (action.dataset.action === 'edit-session') {
+    startWorkoutEdit(sessionId);
+    return;
+  }
+
+  if (action.dataset.action === 'delete-session') {
+    deleteWorkoutSession(sessionId);
+    return;
+  }
+
+  if (action.dataset.action === 'edit-block') {
+    startWorkoutBlockEdit(sessionId, blockId);
+    return;
+  }
+
+  if (action.dataset.action === 'delete-block') {
+    deleteWorkoutBlock(sessionId, blockId);
+  }
+}
+
+function handleWorkoutBlockTypeChange(event) {
+  if (event.target.name !== 'blockType') return;
+  const block = event.target.closest('.workout-block');
+  renderWorkoutBlockFields(block, event.target.value);
+}
+
+function buildWorkoutSessionFromForm(data) {
+  const blocks = [...elements.workoutBlocks.querySelectorAll('.workout-block')]
+    .map(extractWorkoutBlock)
+    .filter(Boolean);
+
+  return normalizeWorkoutSession({
+    id: uid(),
+    date: data.date,
+    category: (data.category || '').trim() || 'Без категории',
+    durationMin: toNullableNumber(data.durationMin),
+    note: (data.note || '').trim(),
+    painBefore: toNullableNumber(data.painBefore),
+    painAfter: toNullableNumber(data.painAfter),
+    blocks
+  });
+}
+
+function extractWorkoutBlock(row) {
+  const type = row.querySelector('[name="blockType"]')?.value || 'strength';
+  const title = (row.querySelector('[name="blockTitle"]')?.value || '').trim();
+  const note = (row.querySelector('[name="blockNote"]')?.value || '').trim();
+  const hasFilledFields = [...row.querySelectorAll('input, textarea, select')].some((field) => {
+    if (field.name === 'blockType' || field.name === 'side') return false;
+    return String(field.value || '').trim() !== '';
+  });
+
+  if (!title && !note && !hasFilledFields) return null;
+
+  const base = {
+    id: row.dataset.blockId || uid(),
+    type,
+    title: title || fallbackBlockTitle(type),
+    note
+  };
+
+  if (type === 'strength') {
+    const sets = toNullableNumber(row.querySelector('[name="sets"]')?.value);
+    const reps = toNullableNumber(row.querySelector('[name="reps"]')?.value);
+    const weightKg = toNullableNumber(row.querySelector('[name="weightKg"]')?.value);
+    const side = row.querySelector('[name="side"]')?.value || '-';
+    return {
+      ...base,
+      sets,
+      reps,
+      weightKg,
+      side,
+      tonnageKg: calcTonnage({ sets, reps, weightKg })
+    };
+  }
+
+  if (type === 'interval') {
+    return {
+      ...base,
+      repeats: toNullableNumber(row.querySelector('[name="repeats"]')?.value),
+      durationSec: toNullableNumber(row.querySelector('[name="durationSec"]')?.value),
+      distanceM: toNullableNumber(row.querySelector('[name="distanceM"]')?.value),
+      restSec: toNullableNumber(row.querySelector('[name="restSec"]')?.value)
+    };
+  }
+
+  return {
+    ...base,
+    durationMin: toNullableNumber(row.querySelector('[name="durationMin"]')?.value),
+    distanceM: toNullableNumber(row.querySelector('[name="distanceM"]')?.value),
+    intensity: (row.querySelector('[name="intensity"]')?.value || '').trim()
+  };
 }
 
 function renderAll() {
@@ -292,19 +604,19 @@ function renderAll() {
   renderDocuments();
   renderExerciseInsights();
   renderInsights();
+  renderWorkoutLibrary();
 }
 
 function renderSummary() {
-  const latestTsh = state.labResults
-    .filter((item) => item.marker === 'ТТГ')
-    .sort(byDateDesc)[0];
+  const latestTsh = state.labResults.filter((item) => item.marker === 'ТТГ').sort(byDateDesc)[0];
   const averagePain = average(state.symptomLogs.map((item) => item.pain));
   const latestVisit = state.visits.slice().sort(byDateDesc)[0];
+  const totalBlocks = state.workoutLogs.reduce((sum, item) => sum + (item.blocks?.length || 0), 0);
   const metrics = [
     {
-      label: 'Тренировок записано',
+      label: 'Тренировок-сессий',
       value: state.workoutLogs.length,
-      note: state.workoutLogs.length ? 'Журнал уже живёт' : 'Пока пусто — начни с первой выполненной ЛФК'
+      note: totalBlocks ? `Внутри уже ${totalBlocks} блоков` : 'Пока пусто — начни с первой сессии'
     },
     {
       label: 'Последний ТТГ',
@@ -357,7 +669,7 @@ function renderTimeline() {
     ...state.visits.map((item) => ({ type: 'Приём', title: `${item.doctor} · ${item.specialty || 'врач'}`, date: item.date, note: item.plan || item.findings })),
     ...state.documents.map((item) => ({ type: item.type, title: item.title, date: item.date, note: item.summary })),
     ...state.labResults.map((item) => ({ type: 'Анализ', title: `${item.marker}: ${item.value} ${item.unit || ''}`.trim(), date: item.date, note: item.note || item.panel })),
-    ...state.workoutLogs.map((item) => ({ type: 'Тренировка', title: item.exercise, date: item.date, note: `${item.setsReps || ''} ${item.weightKg ? `· ${item.weightKg} кг` : ''}`.trim() })),
+    ...state.workoutLogs.map((item) => ({ type: 'Тренировка', title: `${item.category} · ${item.blocks.length} блок(а)`, date: item.date, note: workoutSessionSubtitle(item) })),
     ...state.symptomLogs.map((item) => ({ type: 'Симптом', title: `${item.zone}: ${item.pain}/10`, date: item.date, note: `${item.moment}${item.note ? ` · ${item.note}` : ''}` }))
   ].sort(byDateDesc).slice(0, 8);
 
@@ -389,38 +701,171 @@ function renderSymptoms() {
 }
 
 function renderWorkouts() {
-  const filter = elements.workoutFilter.value;
+  const categories = unique(state.workoutLogs.map((item) => item.category).filter(Boolean)).sort(localeSort);
+  const currentFilter = categories.includes(elements.workoutFilter.value) ? elements.workoutFilter.value : 'all';
+  elements.workoutFilter.innerHTML = `<option value="all">Все</option>${categories.map((item) => `<option value="${escapeAttr(item)}">${escapeHtml(item)}</option>`).join('')}`;
+  elements.workoutFilter.value = currentFilter;
+
   const items = state.workoutLogs
     .slice()
     .sort(byDateDesc)
-    .filter((item) => filter === 'all' || item.category === filter)
+    .filter((item) => currentFilter === 'all' || item.category === currentFilter)
     .slice(0, 12);
 
-  elements.workoutList.innerHTML = items.length ? items.map((item) => `
+  elements.workoutList.innerHTML = items.length ? items.map(renderWorkoutSessionCard).join('') : empty('Пока нет записанных тренировок');
+
+  const exerciseNames = unique(state.workoutLogs.flatMap((item) => item.blocks.map((block) => block.title)).filter(Boolean)).sort(localeSort);
+  const currentExercise = exerciseNames.includes(elements.exerciseSelect.value) ? elements.exerciseSelect.value : exerciseNames[0] || '';
+  elements.exerciseSelect.innerHTML = exerciseNames.length
+    ? exerciseNames.map((exercise) => `<option value="${escapeAttr(exercise)}">${escapeHtml(exercise)}</option>`).join('')
+    : '<option value="">Сначала добавь тренировки</option>';
+  if (currentExercise) elements.exerciseSelect.value = currentExercise;
+}
+
+function renderWorkoutSessionCard(item) {
+  const totals = getWorkoutTotals(item);
+  return `
     <article class="item">
       <div class="meta">
         <span class="chip">${escapeHtml(formatDate(item.date))}</span>
         <span class="chip">${escapeHtml(item.category)}</span>
-        ${item.side && item.side !== '-' ? `<span class="chip">${escapeHtml(item.side)}</span>` : ''}
+        <span class="chip">${item.blocks.length} блок(а)</span>
+        ${item.durationMin ? `<span class="chip">${item.durationMin} мин</span>` : ''}
+        ${totals.totalTonnageKg ? `<span class="chip">тоннаж ${formatNumber(totals.totalTonnageKg)} кг</span>` : ''}
       </div>
-      <h3>${escapeHtml(item.exercise)}</h3>
-      <p>${escapeHtml([
-        item.setsReps,
-        item.weightKg ? `${item.weightKg} кг` : '',
-        item.durationSec ? `${item.durationSec} сек` : '',
-        item.painBefore !== null ? `боль до ${item.painBefore}` : '',
-        item.painAfter !== null ? `боль после ${item.painAfter}` : ''
-      ].filter(Boolean).join(' · ') || 'Без подробностей')}</p>
+      <h3>${escapeHtml(workoutSessionTitle(item))}</h3>
+      <p>${escapeHtml(workoutSessionSubtitle(item))}</p>
       ${item.note ? `<p>${escapeHtml(item.note)}</p>` : ''}
+      <div class="item-actions">
+        <button type="button" class="ghost small" data-action="edit-session" data-session-id="${escapeAttr(item.id)}">Редактировать тренировку</button>
+        <button type="button" class="ghost small danger-ghost" data-action="delete-session" data-session-id="${escapeAttr(item.id)}">Удалить тренировку</button>
+      </div>
+      <div class="stack compact-list">
+        ${item.blocks.map((block, index) => `
+          <article class="subitem">
+            <div class="meta">
+              <span class="chip">${index + 1}</span>
+              <span class="chip">${escapeHtml(blockTypeLabel(block.type))}</span>
+              ${block.side && block.side !== '-' ? `<span class="chip">${escapeHtml(block.side)}</span>` : ''}
+            </div>
+            <strong>${escapeHtml(block.title)}</strong>
+            <p>${escapeHtml(blockSummary(block))}</p>
+            ${block.note ? `<p>${escapeHtml(block.note)}</p>` : ''}
+            <div class="item-actions">
+              <button type="button" class="ghost small" data-action="edit-block" data-session-id="${escapeAttr(item.id)}" data-block-id="${escapeAttr(block.id)}">Редактировать упражнение</button>
+              <button type="button" class="ghost small danger-ghost" data-action="delete-block" data-session-id="${escapeAttr(item.id)}" data-block-id="${escapeAttr(block.id)}">Удалить упражнение</button>
+            </div>
+          </article>
+        `).join('')}
+      </div>
     </article>
-  `).join('') : empty('Пока нет записанных тренировок');
+  `;
+}
 
-  const exercises = unique(state.workoutLogs.map((item) => item.exercise).filter(Boolean));
-  const current = elements.exerciseSelect.value;
-  elements.exerciseSelect.innerHTML = exercises.length
-    ? exercises.map((exercise) => `<option value="${escapeAttr(exercise)}">${escapeHtml(exercise)}</option>`).join('')
-    : '<option value="">Сначала добавь тренировки</option>';
-  if (exercises.includes(current)) elements.exerciseSelect.value = current;
+function renderWorkoutLibrary() {
+  const categories = unique(state.workoutLogs.map((item) => item.category).filter(Boolean)).sort(localeSort);
+  if (elements.workoutCategoryList) {
+    elements.workoutCategoryList.innerHTML = categories.map((item) => `<option value="${escapeAttr(item)}"></option>`).join('');
+  }
+
+  let datalist = document.getElementById('exerciseLibrary');
+  if (!datalist) {
+    datalist = document.createElement('datalist');
+    datalist.id = 'exerciseLibrary';
+    document.body.appendChild(datalist);
+  }
+
+  const currentCategory = (elements.forms.workout.querySelector('[name="category"]')?.value || '').trim();
+  const library = unique(
+    state.workoutLogs
+      .filter((item) => !currentCategory || item.category === currentCategory)
+      .flatMap((item) => item.blocks.map((block) => block.title))
+      .filter(Boolean)
+  ).sort(localeSort);
+
+  datalist.innerHTML = library.map((item) => `<option value="${escapeAttr(item)}"></option>`).join('');
+}
+
+function startWorkoutEdit(sessionId) {
+  const session = state.workoutLogs.find((item) => item.id === sessionId);
+  if (!session) return;
+
+  workoutEditor.editingSessionId = session.id;
+  elements.forms.workout.querySelector('[name="date"]').value = session.date || '';
+  elements.forms.workout.querySelector('[name="category"]').value = session.category || '';
+  elements.forms.workout.querySelector('[name="durationMin"]').value = session.durationMin ?? '';
+  elements.forms.workout.querySelector('[name="painBefore"]').value = session.painBefore ?? '';
+  elements.forms.workout.querySelector('[name="painAfter"]').value = session.painAfter ?? '';
+  elements.forms.workout.querySelector('[name="note"]').value = session.note || '';
+
+  elements.workoutBlocks.innerHTML = '';
+  session.blocks.forEach((block) => addWorkoutBlockRow(block.type, block));
+  updateWorkoutFormMode();
+  renderWorkoutLibrary();
+  elements.forms.workout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function startWorkoutBlockEdit(sessionId, blockId) {
+  const session = state.workoutLogs.find((item) => item.id === sessionId);
+  const block = session?.blocks.find((item) => item.id === blockId);
+  if (!session || !block) return;
+
+  workoutEditor.editingSessionId = session.id;
+  elements.forms.workout.querySelector('[name="date"]').value = session.date || '';
+  elements.forms.workout.querySelector('[name="category"]').value = session.category || '';
+  elements.forms.workout.querySelector('[name="durationMin"]').value = session.durationMin ?? '';
+  elements.forms.workout.querySelector('[name="painBefore"]').value = session.painBefore ?? '';
+  elements.forms.workout.querySelector('[name="painAfter"]').value = session.painAfter ?? '';
+  elements.forms.workout.querySelector('[name="note"]').value = session.note || '';
+
+  elements.workoutBlocks.innerHTML = '';
+  addWorkoutBlockRow(block.type, block);
+  session.blocks
+    .filter((item) => item.id !== blockId)
+    .forEach((item) => addWorkoutBlockRow(item.type, item));
+
+  updateWorkoutFormMode();
+  renderWorkoutLibrary();
+  elements.forms.workout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function deleteWorkoutSession(sessionId) {
+  const session = state.workoutLogs.find((item) => item.id === sessionId);
+  if (!session) return;
+  if (!window.confirm(`Удалить тренировку ${formatDate(session.date)} · ${session.category}?`)) return;
+
+  state.workoutLogs = state.workoutLogs.filter((item) => item.id !== sessionId);
+  if (workoutEditor.editingSessionId === sessionId) {
+    resetWorkoutForm();
+  }
+  saveState();
+  renderAll();
+  toast('Тренировка удалена');
+}
+
+function deleteWorkoutBlock(sessionId, blockId) {
+  const session = state.workoutLogs.find((item) => item.id === sessionId);
+  if (!session) return;
+  const block = session.blocks.find((item) => item.id === blockId);
+  if (!block) return;
+  if (!window.confirm(`Удалить упражнение «${block.title}» из тренировки?`)) return;
+
+  session.blocks = session.blocks.filter((item) => item.id !== blockId);
+  if (!session.blocks.length) {
+    state.workoutLogs = state.workoutLogs.filter((item) => item.id !== sessionId);
+    if (workoutEditor.editingSessionId === sessionId) resetWorkoutForm();
+    saveState();
+    renderAll();
+    toast('Последний блок удалён, тренировка тоже удалена');
+    return;
+  }
+
+  saveState();
+  if (workoutEditor.editingSessionId === sessionId) {
+    startWorkoutEdit(sessionId);
+  }
+  renderAll();
+  toast('Упражнение удалено');
 }
 
 function renderLabs() {
@@ -489,29 +934,26 @@ function renderDocuments() {
 function renderExerciseInsights() {
   const exercise = elements.exerciseSelect.value;
   const series = state.workoutLogs
-    .filter((item) => item.exercise === exercise)
+    .flatMap((session) => session.blocks.map((block) => ({ ...block, workoutDate: session.date, category: session.category })))
+    .filter((item) => item.title === exercise)
     .slice()
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.workoutDate.localeCompare(b.workoutDate));
 
   if (!series.length) {
-    elements.exerciseChart.innerHTML = empty('Запиши несколько тренировок одного упражнения — здесь появится график.');
+    elements.exerciseChart.innerHTML = empty('Запиши несколько блоков одного упражнения — здесь появится график.');
     elements.exerciseStats.innerHTML = empty('Пока нет данных для сравнения.');
     return;
   }
 
-  const chartData = series.map((item) => ({
-    date: item.date,
-    value: item.weightKg ?? item.durationSec ?? parseSets(item.setsReps) ?? 0
-  }));
+  const chartData = series.map((item) => ({ date: item.workoutDate, value: blockMetricValue(item) }));
   elements.exerciseChart.innerHTML = drawBarChart(chartData);
 
-  const best = Math.max(...chartData.map((item) => item.value));
+  const best = Math.max(...chartData.map((item) => item.value), 0);
   const latest = chartData[chartData.length - 1]?.value;
-  const painAfter = average(series.map((item) => item.painAfter).filter((v) => v !== null));
   const stats = [
     `Лучшая зафиксированная метрика: ${best}`,
     `Последняя зафиксированная метрика: ${latest}`,
-    Number.isFinite(painAfter) ? `Средняя боль после упражнения: ${painAfter.toFixed(1)}/10` : 'Нет данных по боли после упражнения'
+    `Тип блока: ${blockTypeLabel(series[0].type)}`
   ];
   elements.exerciseStats.innerHTML = stats.map((line) => `<article class="item"><p>${escapeHtml(line)}</p></article>`).join('');
 }
@@ -522,12 +964,14 @@ function renderInsights() {
   const latestVisit = state.visits.slice().sort(byDateDesc)[0];
   const latestWorkout = state.workoutLogs.slice().sort(byDateDesc)[0];
   const avgMorningBack = average(state.symptomLogs.filter((item) => item.zone === 'Поясница' && item.moment === 'утро').map((item) => item.pain));
+  const lastWorkoutTonnage = latestWorkout ? getWorkoutTotals(latestWorkout).totalTonnageKg : null;
 
   if (latestVisit) items.push(`Последний опорный план сейчас идёт от ${latestVisit.doctor} (${formatDate(latestVisit.date)}).`);
   if (labsOut.length) items.push(`Есть показатели вне референса: ${labsOut.map((item) => `${item.marker} (${item.value})`).join(', ')}.`);
   if (Number.isFinite(avgMorningBack)) items.push(`Средняя утренняя боль в пояснице по журналу: ${avgMorningBack.toFixed(1)}/10.`);
-  if (latestWorkout) items.push(`Последняя тренировка записана ${formatDate(latestWorkout.date)} — ${latestWorkout.exercise}.`);
-  if (!latestWorkout) items.push('Чтобы увидеть реальную динамику по упражнениям, начни заносить выполненные ЛФК-подходы.');
+  if (latestWorkout) items.push(`Последняя тренировка: ${formatDate(latestWorkout.date)} · ${latestWorkout.category} · ${latestWorkout.blocks.length} блок(а).`);
+  if (lastWorkoutTonnage) items.push(`В последней силовой сессии расчётный тоннаж: ${formatNumber(lastWorkoutTonnage)} кг.`);
+  if (!latestWorkout) items.push('Чтобы увидеть реальную динамику, начни заносить тренировки как сессии с блоками.');
   if (!labsOut.length) items.push('По текущим внесённым анализам критичных выбросов пока не подсвечено.');
 
   elements.insightsList.innerHTML = items.map((text) => `<article class="item"><p>${escapeHtml(text)}</p></article>`).join('');
@@ -556,6 +1000,7 @@ function importJson(event) {
       ['protocols', 'workoutLogs', 'symptomLogs', 'labResults', 'visits', 'documents'].forEach((key) => {
         state[key] = Array.isArray(parsed[key]) ? parsed[key] : [];
       });
+      normalizeState();
       saveState();
       renderAll();
       toast('Импорт выполнен');
@@ -582,6 +1027,155 @@ function loadState() {
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function normalizeWorkoutSession(session) {
+  if (session.blocks?.length) {
+    const blocks = session.blocks.map((block) => normalizeWorkoutBlock(block));
+    return {
+      id: session.id || uid(),
+      date: session.date || new Date().toISOString().slice(0, 10),
+      category: session.category || 'Без категории',
+      durationMin: toNullableNumber(session.durationMin),
+      note: session.note || '',
+      painBefore: toNullableNumber(session.painBefore),
+      painAfter: toNullableNumber(session.painAfter),
+      blocks
+    };
+  }
+
+  const legacyBlock = normalizeLegacyWorkoutBlock(session);
+  return {
+    id: session.id || uid(),
+    date: session.date || new Date().toISOString().slice(0, 10),
+    category: session.category || 'Без категории',
+    durationMin: secondsToMinutes(session.durationSec),
+    note: session.note || '',
+    painBefore: toNullableNumber(session.painBefore),
+    painAfter: toNullableNumber(session.painAfter),
+    blocks: legacyBlock ? [legacyBlock] : []
+  };
+}
+
+function normalizeLegacyWorkoutBlock(item) {
+  if (!item.exercise && !item.note) return null;
+  const parsed = parseSetsReps(item.setsReps);
+  return normalizeWorkoutBlock({
+    id: uid(),
+    type: parsed || item.weightKg ? 'strength' : item.durationSec ? 'distance' : 'distance',
+    title: item.exercise || 'Блок',
+    sets: parsed?.sets ?? null,
+    reps: parsed?.reps ?? null,
+    weightKg: toNullableNumber(item.weightKg),
+    side: item.side || '-',
+    durationMin: secondsToMinutes(item.durationSec),
+    note: item.note || ''
+  });
+}
+
+function normalizeWorkoutBlock(block) {
+  const type = block.type || 'strength';
+  const normalized = {
+    id: block.id || uid(),
+    type,
+    title: block.title || fallbackBlockTitle(type),
+    note: block.note || ''
+  };
+
+  if (type === 'strength') {
+    normalized.sets = toNullableNumber(block.sets);
+    normalized.reps = toNullableNumber(block.reps);
+    normalized.weightKg = toNullableNumber(block.weightKg);
+    normalized.side = block.side || '-';
+    normalized.tonnageKg = calcTonnage(normalized);
+    return normalized;
+  }
+
+  if (type === 'interval') {
+    normalized.repeats = toNullableNumber(block.repeats);
+    normalized.durationSec = toNullableNumber(block.durationSec);
+    normalized.distanceM = toNullableNumber(block.distanceM);
+    normalized.restSec = toNullableNumber(block.restSec);
+    return normalized;
+  }
+
+  normalized.durationMin = toNullableNumber(block.durationMin);
+  normalized.distanceM = toNullableNumber(block.distanceM);
+  normalized.intensity = block.intensity || '';
+  return normalized;
+}
+
+function getWorkoutTotals(session) {
+  return {
+    totalTonnageKg: session.blocks.reduce((sum, block) => sum + (block.tonnageKg || 0), 0)
+  };
+}
+
+function workoutSessionTitle(session) {
+  const names = unique(session.blocks.map((block) => block.title).filter(Boolean));
+  if (!names.length) return session.category;
+  return names.length === 1 ? names[0] : `${names[0]} + ещё ${names.length - 1}`;
+}
+
+function workoutSessionSubtitle(session) {
+  const parts = [];
+  if (session.durationMin) parts.push(`${session.durationMin} мин`);
+  if (session.painBefore !== null) parts.push(`боль до ${session.painBefore}`);
+  if (session.painAfter !== null) parts.push(`боль после ${session.painAfter}`);
+  const leadBlocks = session.blocks.slice(0, 3).map((block) => blockSummary(block));
+  if (leadBlocks.length) parts.push(leadBlocks.join(' · '));
+  return parts.join(' · ') || 'Без подробностей';
+}
+
+function blockSummary(block) {
+  if (block.type === 'strength') {
+    const parts = [];
+    if (block.sets !== null && block.reps !== null) parts.push(`${block.sets}×${block.reps}`);
+    if (block.weightKg !== null) parts.push(`${block.weightKg} кг`);
+    if (block.tonnageKg) parts.push(`тоннаж ${formatNumber(block.tonnageKg)} кг`);
+    return parts.join(' · ') || 'Силовой блок';
+  }
+
+  if (block.type === 'interval') {
+    const parts = [];
+    if (block.repeats !== null) parts.push(`${block.repeats} повторов`);
+    if (block.distanceM !== null) parts.push(`${block.distanceM} м`);
+    if (block.durationSec !== null) parts.push(`${block.durationSec} сек`);
+    if (block.restSec !== null) parts.push(`пауза ${block.restSec} сек`);
+    return parts.join(' · ') || 'Интервальный блок';
+  }
+
+  const parts = [];
+  if (block.durationMin !== null) parts.push(`${block.durationMin} мин`);
+  if (block.distanceM !== null) parts.push(`${block.distanceM} м`);
+  if (block.intensity) parts.push(block.intensity);
+  return parts.join(' · ') || 'Свободный блок';
+}
+
+function blockMetricValue(block) {
+  if (block.type === 'strength') return block.tonnageKg || block.weightKg || multiply(block.sets, block.reps) || 0;
+  if (block.type === 'interval') return multiply(block.repeats, block.distanceM) || multiply(block.repeats, block.durationSec) || block.distanceM || block.durationSec || 0;
+  return block.distanceM || block.durationMin || 0;
+}
+
+function blockTypeLabel(type) {
+  return ({ strength: 'силовой', interval: 'интервал', distance: 'свободный' })[type] || type;
+}
+
+function fallbackBlockTitle(type) {
+  return ({ strength: 'Упражнение', interval: 'Интервал', distance: 'Блок' })[type] || 'Блок';
+}
+
+function calcTonnage({ sets, reps, weightKg }) {
+  if (![sets, reps, weightKg].every(Number.isFinite)) return null;
+  return sets * reps * weightKg;
+}
+
+function parseSetsReps(value) {
+  if (!value) return null;
+  const match = String(value).match(/(\d+)\s*x\s*(\d+)/i);
+  if (!match) return null;
+  return { sets: Number(match[1]), reps: Number(match[2]) };
 }
 
 function drawLineChart(series) {
@@ -651,13 +1245,6 @@ function isOutOfRange(item) {
   return Boolean(getLabStatus(item));
 }
 
-function parseSets(value) {
-  if (!value) return null;
-  const match = String(value).match(/(\d+)\s*x\s*(\d+)/i);
-  if (!match) return null;
-  return Number(match[1]) * Number(match[2]);
-}
-
 function formToObject(form) {
   return Object.fromEntries(new FormData(form).entries());
 }
@@ -677,10 +1264,29 @@ function byDateDesc(a, b) {
   return b.date.localeCompare(a.date);
 }
 
+function localeSort(a, b) {
+  return String(a).localeCompare(String(b), 'ru');
+}
+
 function toNullableNumber(value) {
   if (value === '' || value === undefined || value === null) return null;
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
+}
+
+function secondsToMinutes(value) {
+  const number = toNullableNumber(value);
+  if (number === null) return null;
+  return Math.round((number / 60) * 10) / 10;
+}
+
+function multiply(a, b) {
+  if (![a, b].every(Number.isFinite)) return null;
+  return a * b;
+}
+
+function formatNumber(value) {
+  return Number(value).toLocaleString('ru-RU', { maximumFractionDigits: 1 });
 }
 
 function valueOrDash(value) {

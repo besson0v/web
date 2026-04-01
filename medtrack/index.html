@@ -112,7 +112,7 @@
         <div class="grid two">
           <article class="card">
             <div class="card-head">
-              <h2>Новая тренировка</h2>
+              <h2>Новая тренировка-сессия</h2>
             </div>
             <form id="workoutForm" class="form">
               <div class="grid two">
@@ -122,40 +122,15 @@
                 </label>
                 <label>
                   <span>Категория</span>
-                  <select name="category">
-                    <option value="Голеностопы">Голеностопы</option>
-                    <option value="Спина">Спина</option>
-                    <option value="Общее">Общее</option>
-                  </select>
+                  <input name="category" type="text" list="workoutCategoryList" required placeholder="Плавание / бег / голеностопы / спина" />
+                  <datalist id="workoutCategoryList"></datalist>
                 </label>
               </div>
-              <label>
-                <span>Упражнение</span>
-                <input name="exercise" type="text" required placeholder="Жим платформы 1 ногой" />
-              </label>
+
               <div class="grid three">
                 <label>
-                  <span>Сторона</span>
-                  <select name="side">
-                    <option value="-">—</option>
-                    <option value="левая">левая</option>
-                    <option value="правая">правая</option>
-                    <option value="обе">обе</option>
-                  </select>
-                </label>
-                <label>
-                  <span>Вес, кг</span>
-                  <input name="weightKg" type="number" min="0" step="0.5" placeholder="30" />
-                </label>
-                <label>
-                  <span>Подходы × повторы</span>
-                  <input name="setsReps" type="text" placeholder="3x10" />
-                </label>
-              </div>
-              <div class="grid three">
-                <label>
-                  <span>Длительность, сек</span>
-                  <input name="durationSec" type="number" min="0" step="1" placeholder="20" />
+                  <span>Общая длительность, мин</span>
+                  <input name="durationMin" type="number" min="0" step="1" placeholder="45" />
                 </label>
                 <label>
                   <span>Боль до</span>
@@ -166,11 +141,23 @@
                   <input name="painAfter" type="number" min="0" max="10" step="1" placeholder="3" />
                 </label>
               </div>
+
               <label>
-                <span>Комментарий</span>
-                <textarea name="note" rows="3" placeholder="например: на 40 кг чувствуется спина, оставил 30 кг"></textarea>
+                <span>Комментарий к сессии</span>
+                <textarea name="note" rows="3" placeholder="Например: плавание без перегруза; спину берегу; в конце почувствовал усталость"></textarea>
               </label>
-              <button type="submit" class="primary">Сохранить тренировку</button>
+
+              <div class="section-head">
+                <h3>Блоки внутри тренировки</h3>
+                <button type="button" id="addWorkoutBlockBtn" class="ghost">+ Добавить блок</button>
+              </div>
+
+              <div id="workoutBlocks" class="stack"></div>
+
+              <div class="form-actions">
+                <button type="submit" class="primary" id="workoutSubmitBtn">Сохранить тренировку</button>
+                <button type="button" class="ghost" id="workoutCancelEditBtn" hidden>Отменить редактирование</button>
+              </div>
             </form>
           </article>
 
@@ -179,9 +166,6 @@
               <h2>Последние тренировки</h2>
               <select id="workoutFilter">
                 <option value="all">Все</option>
-                <option value="Голеностопы">Голеностопы</option>
-                <option value="Спина">Спина</option>
-                <option value="Общее">Общее</option>
               </select>
             </div>
             <div id="workoutList" class="stack"></div>
@@ -376,10 +360,6 @@
       </section>
     </main>
   </div>
-
-  <template id="itemTemplate">
-    <article class="item"></article>
-  </template>
 
   <script src="./app.js"></script>
 </body>
