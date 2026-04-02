@@ -186,7 +186,7 @@ function init() {
 
 function collectElements() {
   [
-    'summaryCards', 'protocolList', 'timeline', 'symptomsList', 'workoutList', 'labChart', 'labTable',
+    'summaryCards', 'protocolList', 'timeline', 'symptomsList', 'workoutList', 'labChart', 'labTable', 'labSummaryTable',
     'visitList', 'documentList', 'insightsList', 'exerciseChart', 'exerciseStats', 'markerSelect',
     'exerciseSelect', 'workoutFilter', 'exportBtn', 'importInput', 'addWorkoutBlockBtn',
     'workoutBlocks', 'workoutCategoryList', 'workoutSubmitBtn', 'workoutCancelEditBtn'
@@ -312,6 +312,7 @@ function bindUtilities() {
   elements.exportBtn.addEventListener('click', exportJson);
   elements.importInput.addEventListener('change', importJson);
   elements.markerSelect.addEventListener('change', renderLabs);
+  elements.labSummaryTable?.addEventListener('click', handleLabSummaryClick);
   elements.exerciseSelect.addEventListener('change', renderExerciseInsights);
   elements.workoutFilter.addEventListener('change', renderWorkouts);
   elements.addWorkoutBlockBtn?.addEventListener('click', () => addWorkoutBlockRow());
@@ -799,6 +800,13 @@ function renderWorkoutLibrary() {
   datalist.innerHTML = library.map((item) => `<option value="${escapeAttr(item)}"></option>`).join('');
 }
 
+function handleLabSummaryClick(event) {
+  const item = event.target.closest('[data-marker]');
+  if (!item) return;
+  elements.markerSelect.value = item.dataset.marker;
+  renderLabs();
+}
+
 function startWorkoutEdit(sessionId) {
   const session = state.workoutLogs.find((item) => item.id === sessionId);
   if (!session) return;
@@ -882,12 +890,36 @@ function deleteWorkoutBlock(sessionId, blockId) {
 }
 
 function renderLabs() {
-  const markers = unique(state.labResults.map((item) => item.marker).filter(Boolean));
+  const markers = unique(state.labResults.map((item) => item.marker).filter(Boolean)).sort(localeSort);
   const selected = markers.includes(elements.markerSelect.value) ? elements.markerSelect.value : markers[0];
   elements.markerSelect.innerHTML = markers.length
     ? markers.map((marker) => `<option value="${escapeAttr(marker)}">${escapeHtml(marker)}</option>`).join('')
     : '<option value="">Нет анализов</option>';
   if (selected) elements.markerSelect.value = selected;
+
+  const latestByMarker = markers.map((marker) => {
+    const latest = state.labResults
+      .filter((item) => item.marker === marker)
+      .slice()
+      .sort(byDateDesc)[0];
+    return latest;
+  }).filter(Boolean);
+
+  elements.labSummaryTable.innerHTML = latestByMarker.length ? latestByMarker.map((item) => {
+    const status = getLabStatus(item);
+    return `
+      <article class="item lab-summary-item" data-marker="${escapeAttr(item.marker)}">
+        <div class="meta">
+          <span class="chip">${escapeHtml(item.panel || 'Анализ')}</span>
+          <span class="chip">${escapeHtml(formatDate(item.date))}</span>
+          ${status ? `<span class="chip">${escapeHtml(status)}</span>` : ''}
+        </div>
+        <h3>${escapeHtml(item.marker)}</h3>
+        <p>${escapeHtml(String(item.value))} ${escapeHtml(item.unit || '')}</p>
+        <p>${escapeHtml(`Референс: ${valueOrDash(item.refMin)}–${valueOrDash(item.refMax)}`)}</p>
+      </article>
+    `;
+  }).join('') : empty('Пока нет анализов');
 
   const series = state.labResults
     .filter((item) => item.marker === elements.markerSelect.value)

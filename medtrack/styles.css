@@ -319,6 +319,15 @@ li,
   margin-top: 12px;
 }
 
+.lab-summary-item {
+  cursor: pointer;
+}
+
+.lab-summary-item:hover {
+  border-color: rgba(96, 165, 250, 0.42);
+  transform: translateY(-1px);
+}
+
 .ghost.small,
 .primary.small {
   padding: 8px 12px;
