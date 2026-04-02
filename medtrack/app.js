@@ -316,6 +316,7 @@ function bindUtilities() {
   elements.importInput.addEventListener('change', importJson);
   elements.markerSelect.addEventListener('change', renderLabs);
   elements.labSummaryTable?.addEventListener('click', handleLabSummaryClick);
+  elements.summaryCards?.addEventListener('click', handleSummaryCardClick);
   elements.exerciseSelect.addEventListener('change', renderExerciseInsights);
   elements.workoutFilter.addEventListener('change', renderWorkouts);
   elements.addWorkoutBlockBtn?.addEventListener('click', () => addWorkoutBlockRow());
@@ -649,39 +650,43 @@ function renderAll() {
 }
 
 function renderSummary() {
-  const latestTsh = state.labResults.filter((item) => item.marker === 'ТТГ').sort(byDateDesc)[0];
-  const averagePain = average(state.symptomLogs.map((item) => item.pain));
-  const latestVisit = state.visits.slice().sort(byDateDesc)[0];
   const totalBlocks = state.workoutLogs.reduce((sum, item) => sum + (item.blocks?.length || 0), 0);
+  const latestWorkout = state.workoutLogs.slice().sort(byDateDesc)[0];
+  const upcomingVisit = getUpcomingVisit();
+  const latestLabsDate = state.labResults.slice().sort(byDateDesc)[0]?.date || null;
   const metrics = [
     {
-      label: 'Тренировок-сессий',
+      action: 'workouts',
+      label: 'Тренировки',
       value: state.workoutLogs.length,
-      note: totalBlocks ? `Внутри уже ${totalBlocks} блоков` : 'Пока пусто — начни с первой сессии'
+      note: totalBlocks ? `${totalBlocks} блоков внутри всех сессий` : 'Открыть список сессий'
     },
     {
-      label: 'Последний ТТГ',
-      value: latestTsh ? `${latestTsh.value} ${latestTsh.unit || ''}`.trim() : '—',
-      note: latestTsh ? `${formatDate(latestTsh.date)} · референс ${valueOrDash(latestTsh.refMin)}–${valueOrDash(latestTsh.refMax)}` : 'Добавь результаты лаборатории'
+      action: 'visits',
+      label: 'Следующий приём',
+      value: upcomingVisit ? upcomingVisit.doctor : '—',
+      note: upcomingVisit ? `${formatDate(upcomingVisit.date)} · ${upcomingVisit.specialty || 'врач'}` : 'Пока не запланирован'
     },
     {
-      label: 'Средняя боль',
-      value: Number.isFinite(averagePain) ? averagePain.toFixed(1) + '/10' : '—',
-      note: state.symptomLogs.length ? 'По последним записям симптомов' : 'Логи симптомов пока пустые'
+      action: 'labs',
+      label: 'Анализы',
+      value: state.labResults.length,
+      note: latestLabsDate ? `Последнее обновление: ${formatDate(latestLabsDate)}` : 'Открыть сводку анализов'
     },
     {
-      label: 'Последний приём',
-      value: latestVisit ? latestVisit.doctor : '—',
-      note: latestVisit ? formatDate(latestVisit.date) : 'Нет записанных визитов'
+      action: 'protocols',
+      label: 'Последняя тренировка',
+      value: latestWorkout ? latestWorkout.category : '—',
+      note: latestWorkout ? `${formatDate(latestWorkout.date)} · ${latestWorkout.blocks.length} блок(а)` : 'Пока нет тренировок'
     }
   ];
 
   elements.summaryCards.innerHTML = metrics.map((item) => `
-    <article class="metric">
+    <button type="button" class="metric summary-card-btn" data-summary-action="${escapeAttr(item.action)}">
       <div class="metric-label">${escapeHtml(item.label)}</div>
       <div class="metric-value">${escapeHtml(String(item.value))}</div>
       <div class="metric-note">${escapeHtml(item.note)}</div>
-    </article>
+    </button>
   `).join('');
 }
 
@@ -857,6 +862,40 @@ function handleLabSummaryClick(event) {
   if (!item) return;
   elements.markerSelect.value = item.dataset.marker;
   renderLabs();
+}
+
+function handleSummaryCardClick(event) {
+  const card = event.target.closest('[data-summary-action]');
+  if (!card) return;
+
+  const action = card.dataset.summaryAction;
+  if (action === 'workouts') {
+    switchToTab('workouts');
+    elements.workoutSessionsList?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  if (action === 'visits') {
+    switchToTab('visits');
+    elements.visitList?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  if (action === 'labs') {
+    switchToTab('labs');
+    elements.labSummaryTable?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  if (action === 'protocols') {
+    switchToTab('dashboard');
+    elements.protocolList?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function switchToTab(tabName) {
+  document.querySelectorAll('.tab').forEach((item) => item.classList.toggle('active', item.dataset.tab === tabName));
+  document.querySelectorAll('.panel').forEach((item) => item.classList.toggle('active', item.dataset.panel === tabName));
 }
 
 function startWorkoutEdit(sessionId) {
@@ -1340,6 +1379,14 @@ function drawBarChart(series) {
       }).join('')}
     </svg>
   `;
+}
+
+function getUpcomingVisit() {
+  const today = new Date().toISOString().slice(0, 10);
+  return state.visits
+    .filter((item) => item.date && item.date >= today)
+    .slice()
+    .sort((a, b) => a.date.localeCompare(b.date))[0] || null;
 }
 
 function getLabStatus(item) {
