@@ -168,6 +168,9 @@ const elements = {};
 const workoutEditor = {
   editingSessionId: null
 };
+const workoutView = {
+  selectedSessionId: null
+};
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -186,7 +189,7 @@ function init() {
 
 function collectElements() {
   [
-    'summaryCards', 'protocolList', 'timeline', 'symptomsList', 'workoutList', 'labChart', 'labTable', 'labSummaryTable',
+    'summaryCards', 'protocolList', 'timeline', 'symptomsList', 'workoutList', 'workoutSessionsList', 'workoutSessionDetails', 'painFields', 'labChart', 'labTable', 'labSummaryTable',
     'visitList', 'documentList', 'insightsList', 'exerciseChart', 'exerciseStats', 'markerSelect',
     'exerciseSelect', 'workoutFilter', 'exportBtn', 'importInput', 'addWorkoutBlockBtn',
     'workoutBlocks', 'workoutCategoryList', 'workoutSubmitBtn', 'workoutCancelEditBtn'
@@ -318,8 +321,10 @@ function bindUtilities() {
   elements.addWorkoutBlockBtn?.addEventListener('click', () => addWorkoutBlockRow());
   elements.workoutBlocks?.addEventListener('click', handleWorkoutBlockClick);
   elements.workoutBlocks?.addEventListener('change', handleWorkoutBlockTypeChange);
-  elements.workoutList?.addEventListener('click', handleWorkoutListClick);
+  elements.workoutSessionsList?.addEventListener('click', handleWorkoutListClick);
+  elements.workoutSessionDetails?.addEventListener('click', handleWorkoutListClick);
   elements.forms.workout.querySelector('[name="category"]')?.addEventListener('input', renderWorkoutLibrary);
+  elements.forms.workout.querySelector('[name="hasPain"]')?.addEventListener('change', handleWorkoutPainToggle);
   elements.workoutCancelEditBtn?.addEventListener('click', resetWorkoutForm);
 }
 
@@ -329,6 +334,17 @@ function setDefaultDates() {
     const dateInput = form.querySelector('input[type="date"]');
     if (dateInput && !dateInput.value) dateInput.value = today;
   });
+}
+
+function handleWorkoutPainToggle() {
+  const checked = Boolean(elements.forms.workout.querySelector('[name="hasPain"]')?.checked);
+  elements.painFields?.classList.toggle('hidden', !checked);
+  if (!checked) {
+    const before = elements.forms.workout.querySelector('[name="painBefore"]');
+    const after = elements.forms.workout.querySelector('[name="painAfter"]');
+    if (before) before.value = '';
+    if (after) after.value = '';
+  }
 }
 
 function ensureWorkoutBlockRows() {
@@ -348,6 +364,7 @@ function resetWorkoutForm() {
   elements.forms.workout.reset();
   setDefaultDates();
   resetWorkoutBlocks();
+  handleWorkoutPainToggle();
   updateWorkoutFormMode();
   renderWorkoutLibrary();
 }
@@ -503,6 +520,12 @@ function handleWorkoutListClick(event) {
   const sessionId = action.dataset.sessionId;
   const blockId = action.dataset.blockId;
 
+  if (action.dataset.action === 'select-session') {
+    workoutView.selectedSessionId = sessionId;
+    renderWorkouts();
+    return;
+  }
+
   if (action.dataset.action === 'edit-session') {
     startWorkoutEdit(sessionId);
     return;
@@ -542,14 +565,17 @@ function buildWorkoutSessionFromForm(data) {
     .map(extractWorkoutBlock)
     .filter(Boolean);
 
+  const hasPain = Boolean(elements.forms.workout.querySelector('[name="hasPain"]')?.checked);
+
   return normalizeWorkoutSession({
     id: uid(),
     date: data.date,
     category: (data.category || '').trim() || 'Без категории',
     durationMin: toNullableNumber(data.durationMin),
     note: (data.note || '').trim(),
-    painBefore: toNullableNumber(data.painBefore),
-    painAfter: toNullableNumber(data.painAfter),
+    hasPain,
+    painBefore: hasPain ? toNullableNumber(data.painBefore) : null,
+    painAfter: hasPain ? toNullableNumber(data.painAfter) : null,
     blocks
   });
 }
@@ -723,10 +749,16 @@ function renderWorkouts() {
   const items = state.workoutLogs
     .slice()
     .sort(byDateDesc)
-    .filter((item) => currentFilter === 'all' || item.category === currentFilter)
-    .slice(0, 12);
+    .filter((item) => currentFilter === 'all' || item.category === currentFilter);
 
-  elements.workoutList.innerHTML = items.length ? items.map(renderWorkoutSessionCard).join('') : empty('Пока нет записанных тренировок');
+  if (!workoutView.selectedSessionId || !items.some((item) => item.id === workoutView.selectedSessionId)) {
+    workoutView.selectedSessionId = items[0]?.id || null;
+  }
+
+  elements.workoutSessionsList.innerHTML = items.length ? items.map(renderWorkoutSessionListItem).join('') : empty('Пока нет записанных тренировок');
+
+  const selectedSession = items.find((item) => item.id === workoutView.selectedSessionId) || null;
+  elements.workoutSessionDetails.innerHTML = selectedSession ? renderWorkoutSessionCard(selectedSession) : empty('Выбери сессию слева');
 
   const exerciseNames = unique(state.workoutLogs.flatMap((item) => item.blocks.map((block) => block.title)).filter(Boolean)).sort(localeSort);
   const currentExercise = exerciseNames.includes(elements.exerciseSelect.value) ? elements.exerciseSelect.value : exerciseNames[0] || '';
@@ -734,6 +766,25 @@ function renderWorkouts() {
     ? exerciseNames.map((exercise) => `<option value="${escapeAttr(exercise)}">${escapeHtml(exercise)}</option>`).join('')
     : '<option value="">Сначала добавь тренировки</option>';
   if (currentExercise) elements.exerciseSelect.value = currentExercise;
+}
+
+function renderWorkoutSessionListItem(item) {
+  const totals = getWorkoutTotals(item);
+  const activeClass = item.id === workoutView.selectedSessionId ? ' active-session' : '';
+  return `
+    <article class="item lab-summary-item${activeClass}" data-action="select-session" data-session-id="${escapeAttr(item.id)}">
+      <div class="meta">
+        <span class="chip">${escapeHtml(formatDate(item.date))}</span>
+        <span class="chip">${escapeHtml(item.category)}</span>
+      </div>
+      <h3>${escapeHtml(item.category)}</h3>
+      <p>${escapeHtml([
+        item.durationMin ? `${item.durationMin} мин` : '',
+        `${item.blocks.length} блок(а)`,
+        totals.totalTonnageKg ? `тоннаж ${formatNumber(totals.totalTonnageKg)} кг` : ''
+      ].filter(Boolean).join(' · '))}</p>
+    </article>
+  `;
 }
 
 function renderWorkoutSessionCard(item) {
@@ -815,6 +866,8 @@ function startWorkoutEdit(sessionId) {
   elements.forms.workout.querySelector('[name="date"]').value = session.date || '';
   elements.forms.workout.querySelector('[name="category"]').value = session.category || '';
   elements.forms.workout.querySelector('[name="durationMin"]').value = session.durationMin ?? '';
+  elements.forms.workout.querySelector('[name="hasPain"]').checked = Boolean(session.hasPain || session.painBefore !== null || session.painAfter !== null);
+  handleWorkoutPainToggle();
   elements.forms.workout.querySelector('[name="painBefore"]').value = session.painBefore ?? '';
   elements.forms.workout.querySelector('[name="painAfter"]').value = session.painAfter ?? '';
   elements.forms.workout.querySelector('[name="note"]').value = session.note || '';
@@ -1077,27 +1130,33 @@ function saveState() {
 function normalizeWorkoutSession(session) {
   if (session.blocks?.length) {
     const blocks = session.blocks.map((block) => normalizeWorkoutBlock(block));
+    const painBefore = toNullableNumber(session.painBefore);
+    const painAfter = toNullableNumber(session.painAfter);
     return {
       id: session.id || uid(),
       date: session.date || new Date().toISOString().slice(0, 10),
       category: session.category || 'Без категории',
       durationMin: toNullableNumber(session.durationMin),
       note: session.note || '',
-      painBefore: toNullableNumber(session.painBefore),
-      painAfter: toNullableNumber(session.painAfter),
+      hasPain: Boolean(session.hasPain || painBefore !== null || painAfter !== null),
+      painBefore,
+      painAfter,
       blocks
     };
   }
 
   const legacyBlock = normalizeLegacyWorkoutBlock(session);
+  const painBefore = toNullableNumber(session.painBefore);
+  const painAfter = toNullableNumber(session.painAfter);
   return {
     id: session.id || uid(),
     date: session.date || new Date().toISOString().slice(0, 10),
     category: session.category || 'Без категории',
     durationMin: secondsToMinutes(session.durationSec),
     note: session.note || '',
-    painBefore: toNullableNumber(session.painBefore),
-    painAfter: toNullableNumber(session.painAfter),
+    hasPain: Boolean(session.hasPain || painBefore !== null || painAfter !== null),
+    painBefore,
+    painAfter,
     blocks: legacyBlock ? [legacyBlock] : []
   };
 }

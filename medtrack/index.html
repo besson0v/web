@@ -127,11 +127,18 @@
                 </label>
               </div>
 
-              <div class="grid three">
+              <div class="grid two">
                 <label>
                   <span>Общая длительность, мин</span>
                   <input name="durationMin" type="number" min="0" step="1" placeholder="45" />
                 </label>
+                <label class="checkbox-row">
+                  <span>Боль</span>
+                  <input name="hasPain" type="checkbox" />
+                </label>
+              </div>
+
+              <div id="painFields" class="grid two hidden">
                 <label>
                   <span>Боль до</span>
                   <input name="painBefore" type="number" min="0" max="10" step="1" placeholder="2" />
@@ -163,12 +170,16 @@
 
           <article class="card">
             <div class="card-head inline-wrap">
-              <h2>Последние тренировки</h2>
+              <h2>Сессии тренировок</h2>
               <select id="workoutFilter">
                 <option value="all">Все</option>
               </select>
             </div>
-            <div id="workoutList" class="stack"></div>
+            <div id="workoutSessionsList" class="stack"></div>
+            <div class="card-head inline-wrap">
+              <h2>Детали сессии</h2>
+            </div>
+            <div id="workoutSessionDetails" class="stack"></div>
           </article>
         </div>
       </section>

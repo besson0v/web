@@ -328,6 +328,11 @@ li,
   transform: translateY(-1px);
 }
 
+.active-session {
+  border-color: rgba(34, 197, 94, 0.55);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25), var(--shadow);
+}
+
 .ghost.small,
 .primary.small {
   padding: 8px 12px;
