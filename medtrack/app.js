@@ -564,7 +564,7 @@ function extractWorkoutBlock(row) {
     const sets = toNullableNumber(row.querySelector('[name="sets"]')?.value);
     const reps = toNullableNumber(row.querySelector('[name="reps"]')?.value);
     const weightKg = toNullableNumber(row.querySelector('[name="weightKg"]')?.value);
-    const side = row.querySelector('[name="side"]')?.value || '-';
+    const side = row.querySelector('[name="side"]')?.value || 'обе';
     return {
       ...base,
       sets,
@@ -1067,7 +1067,7 @@ function normalizeLegacyWorkoutBlock(item) {
     sets: parsed?.sets ?? null,
     reps: parsed?.reps ?? null,
     weightKg: toNullableNumber(item.weightKg),
-    side: item.side || '-',
+    side: item.side || 'обе',
     durationMin: secondsToMinutes(item.durationSec),
     note: item.note || ''
   });
@@ -1166,9 +1166,10 @@ function fallbackBlockTitle(type) {
   return ({ strength: 'Упражнение', interval: 'Интервал', distance: 'Блок' })[type] || 'Блок';
 }
 
-function calcTonnage({ sets, reps, weightKg }) {
+function calcTonnage({ sets, reps, weightKg, side }) {
   if (![sets, reps, weightKg].every(Number.isFinite)) return null;
-  return sets * reps * weightKg;
+  const sideMultiplier = side === 'обе' ? 2 : 1;
+  return sets * reps * weightKg * sideMultiplier;
 }
 
 function parseSetsReps(value) {
@@ -1331,3 +1332,4 @@ function toast(text) {
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
+
