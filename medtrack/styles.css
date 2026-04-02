@@ -296,6 +296,22 @@ li,
   flex-wrap: wrap;
 }
 
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
 .item-actions {
   display: flex;
   gap: 8px;

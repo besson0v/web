@@ -412,16 +412,19 @@ function renderWorkoutBlockFields(row, type, values = {}) {
           <span>Вес, кг</span>
           <input name="weightKg" type="number" min="0" step="0.5" value="${escapeAttr(values.weightKg ?? '')}" placeholder="30" />
         </label>
-        <label>
-          <span>Сторона</span>
-          <select name="side">
-            <option value="-" ${(values.side || '-') === '-' ? 'selected' : ''}>—</option>
-            <option value="левая" ${values.side === 'левая' ? 'selected' : ''}>левая</option>
-            <option value="правая" ${values.side === 'правая' ? 'selected' : ''}>правая</option>
-            <option value="обе" ${values.side === 'обе' ? 'selected' : ''}>обе</option>
-          </select>
+        <label class="checkbox-row">
+          <span>Стороны</span>
+          <input name="hasSides" type="checkbox" ${values.hasSides ? 'checked' : ''} />
         </label>
       </div>
+      <label class="side-select-wrap ${values.hasSides ? '' : 'hidden'}">
+        <span>Сторона</span>
+        <select name="side">
+          <option value="обе" ${(values.side || 'обе') === 'обе' ? 'selected' : ''}>обе</option>
+          <option value="левая" ${values.side === 'левая' ? 'selected' : ''}>левая</option>
+          <option value="правая" ${values.side === 'правая' ? 'selected' : ''}>правая</option>
+        </select>
+      </label>
       <label>
         <span>Заметка блока</span>
         <textarea name="blockNote" rows="2" placeholder="Например: на 40 кг чувствуется спина, оставил 30 кг">${escapeHtml(values.note || '')}</textarea>
@@ -520,9 +523,17 @@ function handleWorkoutListClick(event) {
 }
 
 function handleWorkoutBlockTypeChange(event) {
-  if (event.target.name !== 'blockType') return;
   const block = event.target.closest('.workout-block');
-  renderWorkoutBlockFields(block, event.target.value);
+  if (!block) return;
+
+  if (event.target.name === 'blockType') {
+    renderWorkoutBlockFields(block, event.target.value);
+    return;
+  }
+
+  if (event.target.name === 'hasSides') {
+    block.querySelector('.side-select-wrap')?.classList.toggle('hidden', !event.target.checked);
+  }
 }
 
 function buildWorkoutSessionFromForm(data) {
@@ -564,14 +575,16 @@ function extractWorkoutBlock(row) {
     const sets = toNullableNumber(row.querySelector('[name="sets"]')?.value);
     const reps = toNullableNumber(row.querySelector('[name="reps"]')?.value);
     const weightKg = toNullableNumber(row.querySelector('[name="weightKg"]')?.value);
-    const side = row.querySelector('[name="side"]')?.value || 'обе';
+    const hasSides = Boolean(row.querySelector('[name="hasSides"]')?.checked);
+    const side = hasSides ? (row.querySelector('[name="side"]')?.value || 'обе') : null;
     return {
       ...base,
+      hasSides,
       sets,
       reps,
       weightKg,
       side,
-      tonnageKg: calcTonnage({ sets, reps, weightKg })
+      tonnageKg: calcTonnage({ sets, reps, weightKg, side, hasSides })
     };
   }
 
@@ -1064,10 +1077,11 @@ function normalizeLegacyWorkoutBlock(item) {
     id: uid(),
     type: parsed || item.weightKg ? 'strength' : item.durationSec ? 'distance' : 'distance',
     title: item.exercise || 'Блок',
+    hasSides: Boolean(item.side && item.side !== '-'),
     sets: parsed?.sets ?? null,
     reps: parsed?.reps ?? null,
     weightKg: toNullableNumber(item.weightKg),
-    side: item.side || 'обе',
+    side: item.side && item.side !== '-' ? item.side : null,
     durationMin: secondsToMinutes(item.durationSec),
     note: item.note || ''
   });
@@ -1166,9 +1180,9 @@ function fallbackBlockTitle(type) {
   return ({ strength: 'Упражнение', interval: 'Интервал', distance: 'Блок' })[type] || 'Блок';
 }
 
-function calcTonnage({ sets, reps, weightKg, side }) {
+function calcTonnage({ sets, reps, weightKg, side, hasSides }) {
   if (![sets, reps, weightKg].every(Number.isFinite)) return null;
-  const sideMultiplier = side === 'обе' ? 2 : 1;
+  const sideMultiplier = hasSides && side === 'обе' ? 2 : 1;
   return sets * reps * weightKg * sideMultiplier;
 }
 
