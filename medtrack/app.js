@@ -523,6 +523,7 @@ function handleWorkoutListClick(event) {
   if (action.dataset.action === 'select-session') {
     workoutView.selectedSessionId = sessionId;
     renderWorkouts();
+    elements.workoutSessionDetails?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
 

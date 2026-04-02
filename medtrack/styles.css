@@ -333,6 +333,11 @@ li,
   box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25), var(--shadow);
 }
 
+.session-select-btn {
+  width: 100%;
+  text-align: left;
+}
+
 .ghost.small,
 .primary.small {
   padding: 8px 12px;
