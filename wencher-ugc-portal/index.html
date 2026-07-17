@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wencher UGC Factory — платформа для бизнеса и креаторов</title>
-  <meta name="description" content="Wencher UGC Factory — единая платформа для запуска UGC-кампаний: от брифа и откликов до модерации, ручной верификации статистики и выплат." />
+  <meta name="description" content="Wencher UGC Factory — платформа для запуска UGC-кампаний: от брифа и откликов до публикации и выплат." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -23,6 +23,8 @@
           <a href="#features">Возможности</a>
           <a href="#roles">Роли</a>
           <a href="#workflow">Как это работает</a>
+          <a href="#creator-desk">Кабинет креатора</a>
+          <a href="#business-desk">Кабинет заказчика</a>
           <a href="#auth">Вход</a>
         </nav>
 
@@ -38,31 +40,15 @@
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">Wencher Agency × creator economy</p>
-            <h1>Платформа, где бизнес запускает UGC-кампании, а креаторы зарабатывают прозрачно</h1>
-            <p class="hero-text">
-              Один кабинет для заказчиков, креаторов и админа: брифы, отклики, загрузка видео,
-              ручная проверка статистики, начисления и выплаты — в едином контуре.
-            </p>
-
+            <h1>UGC-кампании, которые работают</h1>
             <div class="hero-actions">
               <a class="primary-btn" href="#auth">Создать аккаунт</a>
               <a class="ghost-btn" href="#features">Посмотреть сценарии</a>
             </div>
 
-            <ul class="hero-bullets">
-              <li>единая веб-основа для будущего Telegram mini app и мобильных приложений</li>
-              <li>3 роли доступа: креатор, бизнес, админ</li>
-              <li>ручная проверка просмотров и начислений на MVP-этапе</li>
-            </ul>
           </div>
 
           <div class="hero-panel">
-            <div class="glass-card stat-card floating-top">
-              <span class="stat-label">Модель MVP</span>
-              <strong>Ручная верификация статистики</strong>
-              <p>Сначала фиксируем просмотры, ER и выплаты вручную — без сложной автоматизации.</p>
-            </div>
-
             <div class="dashboard-mockup glass-card">
               <div class="mockup-topbar">
                 <span></span><span></span><span></span>
@@ -91,7 +77,7 @@
                       <strong>8 250 ₽</strong>
                     </article>
                     <article>
-                      <span>На ручной проверке</span>
+                      <span>На проверке</span>
                       <strong>17 видео</strong>
                     </article>
                     <article>
@@ -103,11 +89,6 @@
               </div>
             </div>
 
-            <div class="glass-card stat-card floating-bottom">
-              <span class="stat-label">Порог вывода</span>
-              <strong>5 000 ₽</strong>
-              <p>Кнопка вывода активируется автоматически, когда баланс креатора достигает нужной суммы.</p>
-            </div>
           </div>
         </div>
       </section>
@@ -122,10 +103,6 @@
             <strong>Креатор</strong>
             <span>ищет заказы, откликается, загружает видео, следит за балансом</span>
           </article>
-          <article>
-            <strong>Админ</strong>
-            <span>заполняет статистику, начисляет деньги, подтверждает выплаты</span>
-          </article>
         </div>
       </section>
 
@@ -133,7 +110,7 @@
         <div class="container">
           <div class="section-head">
             <p class="eyebrow">Что закрывает платформа</p>
-            <h2>Главные функции первого этапа</h2>
+            <h2>Всё для работы с UGC-кампаниями</h2>
           </div>
 
           <div class="feature-grid">
@@ -148,24 +125,9 @@
               <p>Создание запросов с ТЗ, просмотр откликов, утверждение работ, пополнение кошелька и контроль затрат.</p>
             </article>
             <article class="feature-card">
-              <span class="feature-tag">Admin flow</span>
-              <h3>Операционный центр</h3>
-              <p>Ручной ввод просмотров, комментариев и ER, расчёт начислений, перевод на баланс креатора и реестр выплат.</p>
-            </article>
-            <article class="feature-card">
               <span class="feature-tag">Security</span>
               <h3>Безопасное хранение реквизитов</h3>
               <p>Реквизиты заполняет сам креатор, а в системе они должны храниться только в зашифрованном виде.</p>
-            </article>
-            <article class="feature-card">
-              <span class="feature-tag">Portable core</span>
-              <h3>Единая логика для всех каналов</h3>
-              <p>Web — первый клиент. Потом тот же backend подключается к Telegram mini app и мобильным приложениям.</p>
-            </article>
-            <article class="feature-card">
-              <span class="feature-tag">MVP first</span>
-              <h3>Без лишней сложности на старте</h3>
-              <p>Автосбор метрик и тяжёлая аналитика откладываются, чтобы быстрее собрать рабочую воронку и протестировать спрос.</p>
             </article>
           </div>
         </div>
@@ -174,28 +136,28 @@
       <section class="section section-dark" id="roles">
         <div class="container">
           <div class="section-head narrow">
-            <p class="eyebrow">Три роли — один продукт</p>
-            <h2>Функционал сразу проектируется так, чтобы потом одинаково жить в web, Telegram и mobile</h2>
+            <p class="eyebrow">Один аккаунт — несколько режимов</p>
+            <h2>Выбирайте удобный режим работы</h2>
           </div>
 
           <div class="roles-grid">
             <article class="role-card">
               <div class="role-top">
                 <span class="role-badge creator">Креатор</span>
-                <strong>Личный кабинет</strong>
+                <strong>Режим внутри одного аккаунта</strong>
               </div>
               <ul>
                 <li>поиск заказов и фильтры по нишам</li>
                 <li>отклик на кампанию</li>
                 <li>загрузка видео и статусы проверки</li>
                 <li>кошелёк и история начислений</li>
-                <li>кнопка вывода от 5 000 ₽</li>
+                <li>вывод средств</li>
               </ul>
             </article>
             <article class="role-card">
               <div class="role-top">
                 <span class="role-badge business">Бизнес</span>
-                <strong>Кабинет заказчика</strong>
+                <strong>Второй режим того же аккаунта</strong>
               </div>
               <ul>
                 <li>создание брифа и ТЗ</li>
@@ -205,19 +167,6 @@
                 <li>контроль активных кампаний</li>
               </ul>
             </article>
-            <article class="role-card">
-              <div class="role-top">
-                <span class="role-badge admin">Админ</span>
-                <strong>Управление платформой</strong>
-              </div>
-              <ul>
-                <li>видимость всех брифов и работ</li>
-                <li>ввод статистики по каждому видео</li>
-                <li>начисление денег со счёта бизнеса</li>
-                <li>подтверждение выплат 1 числа</li>
-                <li>операционный контроль и аудит</li>
-              </ul>
-            </article>
           </div>
         </div>
       </section>
@@ -225,7 +174,7 @@
       <section class="section" id="workflow">
         <div class="container">
           <div class="section-head">
-            <p class="eyebrow">Workflow MVP</p>
+            <p class="eyebrow">Как это работает</p>
             <h2>Как проходит кампания внутри платформы</h2>
           </div>
 
@@ -247,18 +196,13 @@
             </article>
             <article>
               <span>04</span>
-              <h3>Админ вручную заносит метрики</h3>
-              <p>Просмотры, комментарии и прочие KPI фиксируются после публикации в ручном режиме.</p>
-            </article>
-            <article>
-              <span>05</span>
               <h3>Система начисляет баланс</h3>
               <p>После подтверждения статистики деньги переводятся со счёта бизнеса на баланс креатора.</p>
             </article>
             <article>
-              <span>06</span>
+              <span>05</span>
               <h3>Заявка на вывод и выплата</h3>
-              <p>Когда на балансе 5 000 ₽ и больше, креатор отправляет заявку, а админ проводит выплату 1 числа следующего месяца.</p>
+              <p>Креатор отправляет заявку на вывод и отслеживает её статус в личном кабинете.</p>
             </article>
           </div>
         </div>
@@ -268,38 +212,10 @@
         <div class="container auth-grid">
           <div class="auth-copy">
             <p class="eyebrow">Регистрация</p>
-            <h2>Быстрый onboarding без лишних полей</h2>
-            <p>
-              На старте оставляем простую регистрацию: имя, почта и пароль. Этого достаточно,
-              чтобы быстро завести аккаунт и уже внутри кабинета выбрать дальнейший сценарий работы.
-            </p>
-
-            <div class="auth-points">
-              <article>
-                <strong>Для заказчика</strong>
-                <span>создать аккаунт и перейти к публикации брифов и управлению кампаниями</span>
-              </article>
-              <article>
-                <strong>Для креатора</strong>
-                <span>зарегистрироваться и начать откликаться на заказы и загружать контент</span>
-              </article>
-              <article>
-                <strong>Без Telegram / WhatsApp на входе</strong>
-                <span>контакты и дополнительные данные можно запросить уже после регистрации</span>
-              </article>
-            </div>
+            <h2>Зарегистрироваться</h2>
           </div>
 
           <div class="auth-card glass-card">
-            <div class="auth-switch" role="tablist" aria-label="Выбор роли">
-              <button class="role-switch active" data-role="creator" type="button">Я креатор</button>
-              <button class="role-switch" data-role="business" type="button">Я заказчик</button>
-            </div>
-
-            <div class="auth-copy-dynamic">
-              <p id="auth-lead">Создайте профиль креатора, чтобы откликаться на заказы и вести баланс в кабинете.</p>
-            </div>
-
             <form class="auth-form" id="auth-form" novalidate>
               <label>
                 <span>Имя</span>
@@ -325,15 +241,1354 @@
               </label>
 
               <p class="form-message" id="form-message" aria-live="polite"></p>
-              <button class="primary-btn form-btn" type="submit" id="submit-button">Создать аккаунт креатора</button>
+              <button class="primary-btn form-btn" type="submit" id="submit-button">Создать аккаунт</button>
             </form>
 
-            <div class="auth-note">
-              <span>Сейчас форма валидирует данные и готова к подключению backend-регистрации.</span>
+            <div class="workspace-preview">
+              <div class="workspace-preview-head">
+                <strong>Ваш кабинет</strong>
+                <span>Выберите режим работы</span>
+              </div>
+
+              <div class="post-login-screen glass-card">
+                <div class="post-login-copy">
+                  <h3>Как вы хотите работать?</h3>
+                  <p>Интерфейс кабинета изменится под выбранный сценарий.</p>
+                </div>
+
+                <div class="mode-choice-grid">
+                  <button class="mode-card active" data-mode="creator" type="button">
+                    <span class="mode-card-badge creator">Креатор</span>
+                    <strong>Я креатор</strong>
+                    <p>Откликаться на брифы, загружать контент, следить за балансом и статусами.</p>
+                  </button>
+
+                  <button class="mode-card" data-mode="business" type="button">
+                    <span class="mode-card-badge business">Заказчик</span>
+                    <strong>Я заказчик</strong>
+                    <p>Создавать кампании, смотреть отклики, утверждать ролики и контролировать расходы.</p>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mode-switch" role="tablist" aria-label="Выбор режима после входа">
+                <button class="mode-toggle active" data-mode="creator" type="button">Я креатор</button>
+                <button class="mode-toggle" data-mode="business" type="button">Я заказчик</button>
+              </div>
+
+              <div class="mode-panel">
+                <p id="mode-lead">Пользователь попадает в кабинет и может сразу заполнить профиль креатора, откликаться на брифы и загружать контент.</p>
+                <ul id="mode-list">
+                  <li>заполнить creator profile</li>
+                  <li>видеть доступные кампании</li>
+                  <li>вести баланс и реквизиты</li>
+                </ul>
+                <p class="mode-footnote" id="mode-footnote">Переключение на режим бизнеса доступно в любой момент без нового логина.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="section creator-desk-section" id="creator-desk">
+        <div class="container creator-desk-shell glass-card">
+          <div class="creator-desk-head">
+            <div>
+              <p class="eyebrow">Creator workspace</p>
+              <h2>Кабинет креатора: от поиска заказов до вывода денег</h2>
+            </div>
+            <p>
+              Экран после входа в creator-режим: видны новые заказы, избранное, активные сдачи,
+              кошелёк и обязательный статус маркировки рекламного контента.
+            </p>
+          </div>
+
+          <div class="creator-layout">
+            <aside class="creator-sidebar">
+              <div class="creator-profile-card">
+                <span class="profile-pill">creator mode</span>
+                <strong>Анна Лаврова</strong>
+                <p>Beauty / Lifestyle / HoReCa · 24 завершённых заказа · рейтинг 4.9</p>
+              </div>
+
+              <nav class="creator-menu">
+                <button class="creator-menu-item active" data-screen-target="dashboard" type="button">Поиск заказов</button>
+                <button class="creator-menu-item" data-screen-target="order" type="button">Карточка заказа</button>
+                <button class="creator-menu-item" data-screen-target="upload" type="button">Отправка версии</button>
+                <button class="creator-menu-item" data-screen-target="revision" type="button">Правки</button>
+                <button class="creator-menu-item" data-screen-target="publish" type="button">Статусы публикации</button>
+                <button class="creator-menu-item" data-screen-target="wallet" type="button">Кошелёк</button>
+              </nav>
+
+              <div class="creator-withdraw-card">
+                <span>Доступно к выводу</span>
+                <strong>12 480 ₽</strong>
+                <p>Следующее окно выплат — 1 августа.</p>
+                <button class="primary-btn creator-small-btn" type="button">Запросить вывод</button>
+              </div>
+            </aside>
+
+            <div class="creator-main">
+              <div class="creator-flow-nav">
+                <button class="creator-flow-step active" data-screen-target="dashboard" type="button">1. Лента</button>
+                <button class="creator-flow-step" data-screen-target="order" type="button">2. Заказ</button>
+                <button class="creator-flow-step" data-screen-target="upload" type="button">3. Отправка</button>
+                <button class="creator-flow-step" data-screen-target="revision" type="button">4. Правки</button>
+                <button class="creator-flow-step" data-screen-target="publish" type="button">5. Статус</button>
+                <button class="creator-flow-step" data-screen-target="wallet" type="button">6. Выплаты</button>
+              </div>
+
+              <div class="creator-flow-status" id="creator-flow-status">
+                <strong>Шаг 1. Лента заказов</strong>
+                <p>Креатор ищет заказ, сохраняет интересные офферы и переходит в карточку конкретного брифа.</p>
+              </div>
+
+              <div class="creator-topbar">
+                <div class="creator-search-card">
+                  <span>Поиск заказов</span>
+                  <strong>Найти подходящий бриф</strong>
+                  <div class="creator-search-row">
+                    <input type="text" value="beauty / lifestyle / restaurants" aria-label="Поиск заказов" readonly />
+                    <button class="ghost-btn creator-filter-btn" type="button">Фильтры: до 30k · Telegram/IG · Москва</button>
+                  </div>
+                </div>
+
+                <div class="creator-stats-grid">
+                  <article>
+                    <span>Новых заказов</span>
+                    <strong>26</strong>
+                  </article>
+                  <article>
+                    <span>Избранных</span>
+                    <strong>7</strong>
+                  </article>
+                  <article>
+                    <span>На проверке</span>
+                    <strong>3</strong>
+                  </article>
+                  <article>
+                    <span>Ожидают выплаты</span>
+                    <strong>18 900 ₽</strong>
+                  </article>
+                </div>
+              </div>
+
+              <div class="creator-content-grid">
+                <section class="creator-panel creator-orders-panel screen-panel active" data-screen="dashboard">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Избранные заказы</span>
+                      <h3>За что можно взяться сейчас</h3>
+                    </div>
+                    <a href="#" aria-label="Открыть все избранные">Смотреть все</a>
+                  </div>
+
+                  <div class="order-list">
+                    <article class="order-card">
+                      <div class="order-card-top">
+                        <div>
+                          <strong>Beauty serum launch</strong>
+                          <span>Бренд косметики · 3 short-form видео</span>
+                        </div>
+                        <em>18 000 ₽</em>
+                      </div>
+                      <ul>
+                        <li>Дедлайн подачи: 6 июля</li>
+                        <li>Нужно лицо в кадре и разговорный формат</li>
+                        <li>Маркировка: ERID выдаёт заказчик до публикации</li>
+                      </ul>
+                      <div class="order-card-actions">
+                        <button class="ghost-btn creator-inline-btn" type="button">В избранном</button>
+                        <button class="primary-btn creator-inline-btn" data-screen-target="order" type="button">Откликнуться</button>
+                      </div>
+                    </article>
+
+                    <article class="order-card muted-order">
+                      <div class="order-card-top">
+                        <div>
+                          <strong>Restaurant opening UGC</strong>
+                          <span>HoReCa · 2 reels + stories pack</span>
+                        </div>
+                        <em>24 000 ₽</em>
+                      </div>
+                      <ul>
+                        <li>Публикация в Instagram / Telegram</li>
+                        <li>Требуется гео: Москва</li>
+                        <li>Маркировка: сначала согласование текста, потом публикация</li>
+                      </ul>
+                      <div class="order-card-actions">
+                        <button class="ghost-btn creator-inline-btn" type="button">Сохранить</button>
+                        <button class="primary-btn creator-inline-btn" data-screen-target="order" type="button">Подробнее</button>
+                      </div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-submissions-panel screen-panel active" data-screen="dashboard">
+                  <div class="creator-panel-head compact">
+                    <div>
+                      <span class="panel-kicker">Мои отправки</span>
+                      <h3>Контент по заказам</h3>
+                    </div>
+                  </div>
+
+                  <div class="submission-list">
+                    <article>
+                      <div>
+                        <strong>Beauty serum launch</strong>
+                        <span>Черновик #2 · загружен 3 часа назад</span>
+                      </div>
+                      <b class="status-chip review">На проверке</b>
+                    </article>
+                    <article>
+                      <div>
+                        <strong>Travel cafe UGC</strong>
+                        <span>Нужно внести правки по CTA и первым 3 секундам</span>
+                      </div>
+                      <b class="status-chip changes">Правки</b>
+                    </article>
+                    <article>
+                      <div>
+                        <strong>Fitness snack promo</strong>
+                        <span>Финальная версия подтверждена, статус публикации: ждёт ERID</span>
+                      </div>
+                      <b class="status-chip approved">Принято</b>
+                    </article>
+                  </div>
+
+                  <div class="upload-flow-card">
+                    <strong>Загрузка контента в заказ</strong>
+                    <ol>
+                      <li>Выбрать заказ и версию ролика</li>
+                      <li>Прикрепить видео, описание и комментарий для заказчика</li>
+                      <li>Отправить на проверку и получить статус: правки / принято / опубликовано</li>
+                    </ol>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-work-table-panel screen-panel active" data-screen="dashboard">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Все работы креатора</span>
+                      <h3>Наглядная таблица по всем заказам и публикациям</h3>
+                    </div>
+                    <a href="#" aria-label="Открыть полный реестр работ">Открыть реестр</a>
+                  </div>
+
+                  <div class="work-filters-bar">
+                    <button class="filter-pill active" type="button">Все статусы</button>
+                    <button class="filter-pill" type="button">На проверке</button>
+                    <button class="filter-pill" type="button">Есть замечания</button>
+                    <button class="filter-pill" type="button">Принято</button>
+                    <button class="filter-pill" type="button">Опубликовано</button>
+                    <button class="filter-pill" type="button">Ждёт ERID</button>
+                  </div>
+
+                  <div class="work-sort-row">
+                    <div class="sort-chip-group">
+                      <span>Сортировка:</span>
+                      <button class="sort-chip active" type="button">по дате изменения</button>
+                      <button class="sort-chip" type="button">по заказчику</button>
+                      <button class="sort-chip" type="button">по статусу</button>
+                      <button class="sort-chip" type="button">по дедлайну</button>
+                    </div>
+                    <button class="ghost-btn creator-inline-btn" type="button">Быстрые фильтры: заказчик / площадка / период</button>
+                  </div>
+
+                  <div class="work-table-shell">
+                    <div class="work-table-head work-table-row">
+                      <span>Работа / заказ</span>
+                      <span>Заказчик</span>
+                      <span>Текущий этап</span>
+                      <span>Статус</span>
+                      <span>Последнее изменение</span>
+                      <span>Дедлайн</span>
+                    </div>
+
+                    <article class="work-table-row work-table-clickable" data-screen-target="order" data-work-id="beauty-serum">
+                      <div>
+                        <strong>Beauty serum launch</strong>
+                        <em id="creator-live-subtitle">Draft v2 · Instagram + Telegram</em>
+                      </div>
+                      <div>GlowLab Beauty</div>
+                      <div id="creator-live-stage">Согласование версии</div>
+                      <div><b class="status-chip review" id="creator-live-row-chip">На проверке</b></div>
+                      <div id="creator-live-updated">сегодня, 11:40</div>
+                      <div id="creator-live-deadline">11 июля</div>
+                    </article>
+
+                    <article class="work-table-row work-table-clickable" data-screen-target="revision" data-work-id="travel-cafe">
+                      <div>
+                        <strong>Travel cafe UGC</strong>
+                        <em>Draft v1 · Reels</em>
+                      </div>
+                      <div>Nomad Coffee</div>
+                      <div>Правки от заказчика</div>
+                      <div><b class="status-chip changes">Есть замечания</b></div>
+                      <div>вчера, 18:15</div>
+                      <div>9 июля</div>
+                    </article>
+
+                    <article class="work-table-row work-table-clickable" data-screen-target="publish" data-work-id="fitness-snack">
+                      <div>
+                        <strong>Fitness snack promo</strong>
+                        <em>Final v1 · Short video</em>
+                      </div>
+                      <div>FitBite</div>
+                      <div>Ожидает маркировку</div>
+                      <div><b class="status-chip pending">Ждёт ERID</b></div>
+                      <div>вчера, 13:02</div>
+                      <div>12 июля</div>
+                    </article>
+
+                    <article class="work-table-row work-table-clickable" data-screen-target="publish" data-work-id="brasa-bistro">
+                      <div>
+                        <strong>Restaurant opening UGC</strong>
+                        <em>Final post · Instagram</em>
+                      </div>
+                      <div>Brasa Bistro</div>
+                      <div>Пост размещён</div>
+                      <div><b class="status-chip approved">Опубликовано</b></div>
+                      <div>2 июля, 20:41</div>
+                      <div>Завершено</div>
+                    </article>
+                  </div>
+
+                  <div class="work-table-note">
+                    <strong>Что важно в этом реестре</strong>
+                    <p>Это должен быть главный обзорный слой кабинета: одним взглядом видно все активные работы, где затык, где нужны правки, где ждём ERID, а где уже можно ждать начисление.</p>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-wallet-panel screen-panel" data-screen="wallet">
+                  <div class="creator-panel-head compact">
+                    <div>
+                      <span class="panel-kicker">Кошелёк</span>
+                      <h3>Деньги и вывод</h3>
+                    </div>
+                  </div>
+
+                  <div class="wallet-cards">
+                    <article>
+                      <span>Баланс</span>
+                      <strong id="creator-wallet-balance">31 380 ₽</strong>
+                    </article>
+                    <article>
+                      <span>Холд до публикации</span>
+                      <strong id="creator-wallet-hold">6 500 ₽</strong>
+                    </article>
+                    <article>
+                      <span>К выводу сейчас</span>
+                      <strong id="creator-wallet-available">12 480 ₽</strong>
+                    </article>
+                  </div>
+
+                  <div class="wallet-history">
+                    <div class="wallet-history-head">
+                      <strong>История поступлений / выводов</strong>
+                      <span>Последние операции</span>
+                    </div>
+                    <div class="wallet-table">
+                      <article>
+                        <span>+9 000 ₽ · Fitness snack promo</span>
+                        <em>Начислено после подтверждения статистики</em>
+                      </article>
+                      <article>
+                        <span>-12 000 ₽ · Вывод на СБП</span>
+                        <em>Выплачено 1 июля</em>
+                      </article>
+                      <article>
+                        <span>+4 500 ₽ · Travel cafe UGC</span>
+                        <em>Бонус за доп. stories pack</em>
+                      </article>
+                    </div>
+                  </div>
+
+                  <div class="withdraw-flow-note">
+                    <strong>Механизм вывода</strong>
+                    <p>Креатор сохраняет реквизиты один раз, после чего отправляет заявку на вывод. До даты выплаты заявка имеет статусы: создана → проверка реквизитов → запланировано на 1 число → выплачено.</p>
+                  </div>
+
+                  <div class="workflow-live-card wallet-live-card">
+                    <div class="detail-section-head compact-head">
+                      <strong>Финальный денежный шаг</strong>
+                      <span>Начисление → заявка на вывод</span>
+                    </div>
+                    <div class="workflow-live-status">
+                      <b class="status-chip pending" id="creator-withdraw-chip">Пока нечего выводить</b>
+                      <p id="creator-withdraw-note">После подтверждения публикации заказ переходит к проверке результата, затем — к начислению и выводу средств.</p>
+                    </div>
+                    <div class="upload-form-actions">
+                      <button class="primary-btn creator-inline-btn" id="creator-withdraw-btn" type="button">Запросить вывод</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-compliance-panel screen-panel" data-screen="publish">
+                  <div class="creator-panel-head compact">
+                    <div>
+                      <span class="panel-kicker">Маркировка рекламы</span>
+                      <h3>Не отдельный экран, а обязательный статус внутри заказа</h3>
+                    </div>
+                  </div>
+
+                  <div class="compliance-grid">
+                    <article>
+                      <strong>1. У каждой публикации есть свой статус</strong>
+                      <p>Для каждого рекламного заказа показываем: на проверке, есть замечания, принято, ждёт ERID, опубликовано.</p>
+                    </article>
+                    <article>
+                      <strong>2. Без ERID статус не становится “опубликовано”</strong>
+                      <p>Креатор может сдать ролик на проверку, но финальный статус публикации закрывается только после маркировки.</p>
+                    </article>
+                    <article>
+                      <strong>3. Ответственность видна в карточке заказа</strong>
+                      <p>Заказчик / агентство передаёт данные для маркировки, а креатор видит текущий статус и следующий обязательный шаг.</p>
+                    </article>
+                  </div>
+
+                  <div class="compliance-note">
+                    <span>Статусы помогают пройти все этапы маркировки: “маркировка требуется”, “ERID получен”, “инструкция к размещению”, “публикация подтверждена”.</span>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-order-detail-panel screen-panel" data-screen="order">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Карточка заказа</span>
+                      <h3>Как выглядит рабочий экран внутри конкретного заказа</h3>
+                    </div>
+                  </div>
+
+                  <div class="order-detail-layout">
+                    <article class="order-detail-hero">
+                      <div class="order-detail-title-row">
+                        <div>
+                          <span class="detail-badge live" id="order-detail-badge">Активный заказ</span>
+                          <strong id="order-detail-title">Beauty serum launch · заказ #2048</strong>
+                          <p id="order-detail-description">Нативный UGC для запуска новой линейки сыворотки: 3 вертикальных ролика, 1 Stories pack, публикация в Instagram и Telegram.</p>
+                        </div>
+                        <div class="order-detail-price">
+                          <span>Бюджет креатора</span>
+                          <strong id="order-detail-budget">18 000 ₽</strong>
+                          <em id="order-detail-budget-note">50% после приёмки · 50% после подтверждения публикации</em>
+                        </div>
+                      </div>
+
+                      <div class="order-detail-meta">
+                        <article>
+                          <span>Дедлайн отклика</span>
+                          <strong id="order-detail-apply-deadline">6 июля</strong>
+                        </article>
+                        <article>
+                          <span>Дедлайн сдачи</span>
+                          <strong id="order-detail-delivery-deadline">11 июля</strong>
+                        </article>
+                        <article>
+                          <span>Формат</span>
+                          <strong id="order-detail-format">3 reels + 1 stories pack</strong>
+                        </article>
+                        <article>
+                          <span>Площадка</span>
+                          <strong id="order-detail-platform">Instagram / Telegram</strong>
+                        </article>
+                      </div>
+                    </article>
+
+                    <article class="order-detail-brief">
+                      <div class="detail-section-head">
+                        <strong>Что видит креатор в заказе</strong>
+                      </div>
+                      <ul id="order-detail-brief-list">
+                        <li>описание бренда и продукта</li>
+                        <li>референсы, стоп-слова, требования к первым секундам</li>
+                        <li>список обязательных deliverables и дедлайны</li>
+                        <li>чек-лист перед отправкой: формат, качество, CTA, текст публикации</li>
+                      </ul>
+                    </article>
+
+                    <article class="order-detail-brief workflow-live-card">
+                      <div class="detail-section-head">
+                        <strong>Отклик на кампанию</strong>
+                        <span>Первый этап работы с заказом</span>
+                      </div>
+
+                      <div class="workflow-live-status">
+                        <b class="status-chip pending" id="creator-application-chip">Не откликался</b>
+                        <p id="creator-application-note">Сначала креатор отправляет заявку на кампанию. Пока заказчик не примет отклик, отправка ролика остаётся закрытой.</p>
+                      </div>
+
+                      <div class="upload-form-actions">
+                        <button class="primary-btn creator-inline-btn" id="creator-apply-btn" type="button">Откликнуться на кампанию</button>
+                      </div>
+                    </article>
+
+                    <article class="order-detail-upload">
+                      <div class="detail-section-head">
+                        <strong>Загрузка контента в заказ</strong>
+                      <span>Не просто файл, а версия с комментарием и текущим статусом</span>
+                      </div>
+
+                      <div class="upload-steps-grid">
+                        <article>
+                          <strong>Шаг 1</strong>
+                          <p>Выбрать тип материала: draft / final / stories pack / caption.</p>
+                        </article>
+                        <article>
+                          <strong>Шаг 2</strong>
+                          <p>Загрузить файл, подписать версию и оставить комментарий заказчику.</p>
+                        </article>
+                        <article>
+                          <strong>Шаг 3</strong>
+                          <p>Отправить на проверку и получить понятный ответ: принято / правки / готово к публикации.</p>
+                        </article>
+                      </div>
+
+                      <div class="submission-version-table">
+                        <article>
+                          <div>
+                            <strong>Draft v1</strong>
+                            <span>2 июля · загружен креатором</span>
+                          </div>
+                          <b class="status-chip changes">Правки</b>
+                        </article>
+                        <article>
+                          <div>
+                            <strong>Draft v2</strong>
+                            <span>4 июля · текущая версия · статус публикации: на проверке</span>
+                          </div>
+                          <b class="status-chip review">На проверке</b>
+                        </article>
+                        <article>
+                          <div>
+                            <strong>Caption + Stories pack</strong>
+                            <span>ожидает загрузки</span>
+                          </div>
+                          <b class="status-chip pending">Нужно загрузить</b>
+                        </article>
+                      </div>
+
+                      <div class="upload-form-actions">
+                        <button class="primary-btn creator-inline-btn" data-screen-target="upload" type="button">Перейти к отправке версии</button>
+                      </div>
+                    </article>
+
+                    <article class="order-detail-compliance">
+                      <div class="detail-section-head">
+                        <strong>Маркировка прямо внутри заказа</strong>
+                        <span>Отдельный обязательный блок перед публикацией</span>
+                      </div>
+
+                      <div class="compliance-flow-list">
+                        <article>
+                          <span>Статус</span>
+                          <strong>Маркировка обязательна</strong>
+                          <p>Система сразу показывает, что это рекламный заказ и публикацию без маркировки закрыть нельзя.</p>
+                        </article>
+                        <article>
+                          <span>Кто отвечает</span>
+                          <strong>ERID выдаёт заказчик / агентство</strong>
+                          <p>Креатору не нужно гадать, кто делает этот шаг: ответственность зафиксирована в карточке.</p>
+                        </article>
+                        <article>
+                          <span>Что ждём</span>
+                          <strong>ERID + инструкция к размещению</strong>
+                          <p>После приёмки ролика заказчик присылает идентификатор и точную формулировку, как маркировка должна стоять в посте.</p>
+                        </article>
+                      </div>
+
+                      <div class="compliance-checklist-card">
+                        <strong>Что меняет статус публикации внутри заказа</strong>
+                        <ul>
+                          <li>на проверке — версия отправлена заказчику</li>
+                          <li>есть замечания — заказчик вернул комментарии</li>
+                          <li>принято — ролик утверждён</li>
+                          <li>опубликовано — есть ERID, ссылка и подтверждение размещения</li>
+                        </ul>
+                      </div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-upload-screen-panel screen-panel" data-screen="upload">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Экран отправки версии</span>
+                      <h3>Как выглядит форма загрузки ролика в заказ</h3>
+                    </div>
+                  </div>
+
+                  <div class="upload-screen-layout">
+                    <article class="upload-screen-form-card">
+                      <div class="detail-section-head">
+                        <strong>Новая отправка в заказ #2048</strong>
+                        <span>Draft v3 · Beauty serum launch</span>
+                      </div>
+
+                      <div class="fake-form-grid">
+                        <label class="fake-field">
+                          <span>Тип материала</span>
+                          <div class="fake-input fake-chip-row">
+                            <b>Draft video</b>
+                            <em>Final / Stories pack / Caption</em>
+                          </div>
+                        </label>
+
+                        <label class="fake-field">
+                          <span>Название версии</span>
+                          <div class="fake-input">Draft v3 — softer hook + новый CTA</div>
+                        </label>
+
+                        <label class="fake-field">
+                          <span>Комментарий для заказчика</span>
+                          <div class="fake-input fake-textarea">
+                            Пересобрала первые 3 секунды, добавила более нативную подводку и убрала слишком прямой sales-tone. Отдельно приложила короткую версию для Telegram.
+                          </div>
+                        </label>
+
+                        <label class="fake-field">
+                          <span>Файлы</span>
+                          <div class="upload-dropzone">
+                            <strong>Перетащить видео или выбрать файл</strong>
+                            <p>mp4 / mov · до 500 МБ · можно добавить caption и stories pack отдельными файлами</p>
+                            <div class="attached-files-list">
+                              <article>
+                                <span>beauty-serum-draft-v3.mp4</span>
+                                <em>148 МБ · 00:27</em>
+                              </article>
+                              <article>
+                                <span>telegram-caption-v3.txt</span>
+                                <em>1 КБ · текст публикации</em>
+                              </article>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+
+                      <div class="upload-form-actions">
+                        <button class="ghost-btn creator-inline-btn" type="button">Сохранить как черновик</button>
+                        <button class="primary-btn creator-inline-btn" data-screen-target="revision" id="creator-submit-btn" type="button">Отправить на проверку</button>
+                      </div>
+                    </article>
+
+                    <article class="upload-screen-sidebar-card">
+                      <div class="detail-section-head compact-head">
+                        <strong>Что происходит после отправки</strong>
+                      </div>
+
+                      <div class="upload-status-flow">
+                        <article>
+                          <strong>1. Версия фиксируется в истории</strong>
+                          <p>У заказа появляется новая карточка версии с таймстемпом, автором и комментарием.</p>
+                        </article>
+                        <article>
+                          <strong>2. Заказчик получает уведомление</strong>
+                          <p>Он открывает именно эту версию и оставляет статус: принято / правки / готово к публикации.</p>
+                        </article>
+                        <article>
+                          <strong>3. После приёмки открывается публикация</strong>
+                          <p>Если заказ рекламный, следующий шаг — маркировка и подтверждение ERID перед публикацией.</p>
+                        </article>
+                      </div>
+
+                      <div class="upload-side-note">
+                        <strong>Что важно для UX</strong>
+                        <ul>
+                          <li>не терять историю версий</li>
+                          <li>отдельно хранить видео, caption и stories pack</li>
+                          <li>показывать причину правок в явном виде</li>
+                          <li>не давать пометить пост опубликованным без блока маркировки</li>
+                        </ul>
+                      </div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-revision-screen-panel screen-panel" data-screen="revision">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Экран правок</span>
+                      <h3>Как креатор получает комментарии и отправляет новую версию</h3>
+                    </div>
+                  </div>
+
+                  <div class="revision-screen-layout">
+                    <article class="revision-thread-card">
+                      <div class="detail-section-head">
+                        <strong>Draft v2 вернулся с правками</strong>
+                        <b class="status-chip changes">Нужны правки</b>
+                      </div>
+
+                      <div class="revision-summary-card">
+                        <strong>Сводка от заказчика</strong>
+                        <p>Видео в целом нравится, но нужно мягче подать оффер в начале и убрать слишком рекламный тон в финальном CTA. Также просят отдельную версию caption для Telegram.</p>
+                      </div>
+
+                      <div class="comment-thread-list">
+                        <article>
+                          <span>Комментарий #1 · 00:01–00:04</span>
+                          <strong>Первые секунды выглядят слишком постановочно</strong>
+                          <p>Попробуйте начать с более нативной бытовой сцены, как будто это личная рекомендация, а не рекламная вставка.</p>
+                        </article>
+                        <article>
+                          <span>Комментарий #2 · 00:18–00:24</span>
+                          <strong>CTA слишком жёсткий</strong>
+                          <p>Нужен более мягкий заход: не “покупайте сейчас”, а “мне зашло, делюсь находкой”.</p>
+                        </article>
+                        <article>
+                          <span>Комментарий #3 · Текст публикации</span>
+                          <strong>Нужен отдельный caption для Telegram</strong>
+                          <p>Instagram-caption можно оставить длиннее, а для Telegram нужен короче и разговорнее.</p>
+                        </article>
+                      </div>
+                    </article>
+
+                    <article class="revision-compare-card">
+                      <div class="detail-section-head compact-head">
+                        <strong>Сравнение версий</strong>
+                      </div>
+
+                      <div class="version-compare-grid">
+                        <article>
+                          <span>Текущая версия</span>
+                          <strong>Draft v2</strong>
+                          <p>Статус: правки · последняя отправка 4 июля, 14:20</p>
+                        </article>
+                        <article>
+                          <span>Следующая версия</span>
+                          <strong>Draft v3</strong>
+                          <p>Креатор меняет hook, CTA и прикладывает новый Telegram-caption.</p>
+                        </article>
+                      </div>
+
+                      <div class="revision-checklist-card">
+                        <strong>Что нужно исправить перед повторной отправкой</strong>
+                        <ul>
+                          <li>обновить первые 3–4 секунды</li>
+                          <li>смягчить формулировку оффера в финале</li>
+                          <li>добавить отдельный Telegram-caption</li>
+                          <li>в комментарии к версии описать, что именно поменялось</li>
+                        </ul>
+                      </div>
+                    </article>
+
+                    <article class="revision-resubmit-card">
+                      <div class="detail-section-head">
+                        <strong>Повторная отправка версии</strong>
+                        <span>Форма должна ощущаться как продолжение ветки, а не новая сущность</span>
+                      </div>
+
+                      <div class="fake-form-grid">
+                        <label class="fake-field">
+                          <span>Новая версия</span>
+                          <div class="fake-input">Draft v3 — softer opening + Telegram caption</div>
+                        </label>
+
+                        <label class="fake-field">
+                          <span>Что исправлено</span>
+                          <div class="fake-input fake-textarea">
+                            Переделала начало: теперь ролик стартует с более бытовой сцены. Финальный CTA смягчён. Отдельно добавила короткий Telegram-caption и приложила его вторым файлом.
+                          </div>
+                        </label>
+
+                        <label class="fake-field">
+                          <span>Файлы новой версии</span>
+                          <div class="attached-files-list revision-files-list">
+                            <article>
+                              <span>beauty-serum-draft-v3.mp4</span>
+                              <em>151 МБ · updated</em>
+                            </article>
+                            <article>
+                              <span>telegram-caption-v3.txt</span>
+                              <em>new attachment</em>
+                            </article>
+                          </div>
+                        </label>
+                      </div>
+
+                      <div class="upload-form-actions">
+                        <button class="ghost-btn creator-inline-btn" type="button">Оставить в черновиках</button>
+                        <button class="primary-btn creator-inline-btn" data-screen-target="publish" id="creator-resubmit-btn" type="button">Отправить исправленную версию</button>
+                      </div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel creator-publish-screen-panel screen-panel" data-screen="publish">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Статус публикации внутри заказа</span>
+                      <h3>Это не отдельный кабинет, а карточка состояния конкретной публикации</h3>
+                    </div>
+                  </div>
+
+                  <div class="publish-screen-layout">
+                    <article class="publish-status-card">
+                      <div class="detail-section-head">
+                        <strong>Финальный ролик принят</strong>
+                        <b class="status-chip approved">Принято</b>
+                      </div>
+
+                      <div class="publish-status-grid">
+                        <article>
+                          <span>Ролик</span>
+                          <strong>Final v1 approved</strong>
+                        </article>
+                        <article>
+                          <span>Текущий статус</span>
+                          <strong>Ждёт ERID</strong>
+                        </article>
+                        <article>
+                          <span>Следующий шаг</span>
+                          <strong>Получить маркировку и опубликовать</strong>
+                        </article>
+                      </div>
+                    </article>
+
+                    <article class="publish-erid-card">
+                      <div class="detail-section-head compact-head">
+                        <strong>Карточка статусов публикации</strong>
+                      </div>
+
+                      <div class="erid-info-list">
+                        <article>
+                          <span>Статус 1</span>
+                          <strong>На проверке</strong>
+                          <p>Версия отправлена, заказчик ещё не принял решение.</p>
+                        </article>
+                        <article>
+                          <span>Статус 2</span>
+                          <strong>Есть замечания</strong>
+                          <p>Заказчик вернул комментарии, и креатор отправляет новую версию в ту же ветку.</p>
+                        </article>
+                        <article>
+                          <span>Статус 3</span>
+                          <strong>Принято / Опубликовано</strong>
+                          <p>После приёмки ролика публикация ждёт ERID, а затем закрывается статусом “опубликовано”.</p>
+                        </article>
+                      </div>
+
+                      <div class="fake-form-grid">
+                        <label class="fake-field">
+                          <span>ERID</span>
+                          <div class="fake-input">ERID: 2Vtzqw9AbCdeFg123</div>
+                        </label>
+                        <label class="fake-field">
+                          <span>Инструкция к размещению</span>
+                          <div class="fake-input fake-textarea">
+                            Указать рекламную маркировку в caption, не убирать тег бренда, сохранить финальный текст без сокращений. После публикации отправить прямую ссылку на пост в заказ.
+                          </div>
+                        </label>
+                      </div>
+                    </article>
+
+                    <article class="publish-confirm-card">
+                      <div class="detail-section-head compact-head">
+                        <strong>Подтверждение публикации</strong>
+                        <span>Последний шаг, после которого открывается начисление</span>
+                      </div>
+
+                      <div class="fake-form-grid">
+                        <label class="fake-field">
+                          <span>Ссылка на опубликованный пост</span>
+                          <div class="fake-input">https://instagram.com/p/beauty-serum-launch</div>
+                        </label>
+                        <label class="fake-field">
+                          <span>Комментарий к публикации</span>
+                          <div class="fake-input fake-textarea">
+                            Публикация вышла 11 июля в 18:40. Маркировка и текст размещены по инструкции. Telegram-версия опубликована отдельным постом и тоже прикреплена к заказу.
+                          </div>
+                        </label>
+                      </div>
+
+                      <div class="publish-checklist-card">
+                        <strong>Когда статус меняется на “опубликовано”</strong>
+                        <ul>
+                          <li>финальный ролик имеет статус approved</li>
+                          <li>поле ERID заполнено</li>
+                          <li>добавлена ссылка на опубликованный пост</li>
+                          <li>креатор подтвердил, что маркировка размещена по инструкции</li>
+                        </ul>
+                      </div>
+
+                      <div class="upload-form-actions">
+                        <button class="ghost-btn creator-inline-btn" type="button">Сохранить без подтверждения</button>
+                        <button class="primary-btn creator-inline-btn" data-screen-target="dashboard" id="creator-publish-btn" type="button">Подтвердить публикацию</button>
+                      </div>
+
+                      <p class="publish-footnote">После подтверждения публикации деньги не падают сразу в кошелёк: сначала заказ уходит в этап проверки статистики и последующего начисления.</p>
+                    </article>
+                  </div>
+                </section>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      <section class="section business-desk-section" id="business-desk">
+        <div class="container creator-desk-shell glass-card business-shell">
+          <div class="creator-desk-head">
+            <div>
+              <p class="eyebrow">Business workspace</p>
+              <h2>Кабинет заказчика: брифы, отклики, согласование и контроль выплат</h2>
+            </div>
+            <p>
+              Тестовый контур для бренда или агентства: от публикации брифа и отбора креаторов
+              до согласования роликов, передачи ERID и контроля бюджета кампании.
+            </p>
+          </div>
+
+          <div class="creator-layout business-layout">
+            <aside class="creator-sidebar business-sidebar">
+              <div class="creator-profile-card business-profile-card">
+                <span class="profile-pill">business mode</span>
+                <strong>GlowLab Beauty</strong>
+                <p>6 активных кампаний · 28 креаторов в работе · баланс 184 500 ₽</p>
+              </div>
+
+              <nav class="creator-menu business-menu">
+                <button class="creator-menu-item active business-menu-item" data-business-screen-target="dashboard" type="button">Кампании</button>
+                <button class="creator-menu-item business-menu-item" data-business-screen-target="brief" type="button">Бриф</button>
+                <button class="creator-menu-item business-menu-item" data-business-screen-target="responses" type="button">Отклики</button>
+                <button class="creator-menu-item business-menu-item" data-business-screen-target="review" type="button">Проверка роликов</button>
+                <button class="creator-menu-item business-menu-item" data-business-screen-target="publish" type="button">Публикации / ERID</button>
+                <button class="creator-menu-item business-menu-item" data-business-screen-target="finance" type="button">Бюджет и выплаты</button>
+              </nav>
+
+              <div class="creator-withdraw-card business-balance-card">
+                <span>Доступно в бюджете</span>
+                <strong>184 500 ₽</strong>
+                <p>42 000 ₽ уже зарезервировано под текущие кампании и будущие начисления.</p>
+                <button class="primary-btn creator-small-btn" type="button">Пополнить кошелёк</button>
+              </div>
+            </aside>
+
+            <div class="creator-main business-main">
+              <div class="creator-flow-nav business-flow-nav">
+                <button class="creator-flow-step active business-flow-step" data-business-screen-target="dashboard" type="button">1. Обзор</button>
+                <button class="creator-flow-step business-flow-step" data-business-screen-target="brief" type="button">2. Бриф</button>
+                <button class="creator-flow-step business-flow-step" data-business-screen-target="responses" type="button">3. Отклики</button>
+                <button class="creator-flow-step business-flow-step" data-business-screen-target="review" type="button">4. Проверка</button>
+                <button class="creator-flow-step business-flow-step" data-business-screen-target="publish" type="button">5. Публикации</button>
+                <button class="creator-flow-step business-flow-step" data-business-screen-target="finance" type="button">6. Финансы</button>
+              </div>
+
+              <div class="creator-flow-status" id="business-flow-status">
+                <strong>Шаг 1. Обзор кампаний</strong>
+                <p>Заказчик видит все кампании, где что застряло, какие ролики ждут проверки и какие публикации ещё не закрыты по ERID.</p>
+              </div>
+
+              <div class="creator-topbar business-topbar business-screen-panel active" data-business-screen="dashboard">
+                <div class="creator-search-card">
+                  <span>Поиск по кампаниям</span>
+                  <strong>Найти кампанию, заказ или креатора</strong>
+                  <div class="creator-search-row">
+                    <input type="text" value="beauty / horeca / lifestyle / Anna Lavrova" aria-label="Поиск кампаний" readonly />
+                    <button class="ghost-btn creator-filter-btn" type="button">Фильтры: активные · Москва · Instagram/Telegram</button>
+                  </div>
+                </div>
+
+                <div class="creator-stats-grid">
+                  <article>
+                    <span>Активных кампаний</span>
+                    <strong>6</strong>
+                  </article>
+                  <article>
+                    <span>Новых откликов</span>
+                    <strong>19</strong>
+                  </article>
+                  <article>
+                    <span>На проверке</span>
+                    <strong>8 роликов</strong>
+                  </article>
+                  <article>
+                    <span>Ждут ERID</span>
+                    <strong>4 публикации</strong>
+                  </article>
+                </div>
+              </div>
+
+              <div class="creator-content-grid business-content-grid">
+                <section class="creator-panel business-screen-panel active" data-business-screen="dashboard">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Реестр кампаний</span>
+                      <h3>Все активные работы заказчика</h3>
+                    </div>
+                    <a href="#" aria-label="Открыть все кампании">Все кампании</a>
+                  </div>
+
+                  <div class="work-filters-bar">
+                    <button class="filter-pill active" type="button">Все</button>
+                    <button class="filter-pill" type="button">Нужны отклики</button>
+                    <button class="filter-pill" type="button">На проверке</button>
+                    <button class="filter-pill" type="button">Ждёт ERID</button>
+                    <button class="filter-pill" type="button">Ждёт выплату</button>
+                  </div>
+
+                  <div class="work-table-shell">
+                    <div class="work-table-head work-table-row">
+                      <span>Кампания</span>
+                      <span>Заказчик / бренд</span>
+                      <span>Креаторы</span>
+                      <span>Статус</span>
+                      <span>Последнее изменение</span>
+                      <span>Бюджет</span>
+                    </div>
+
+                    <article class="work-table-row work-table-clickable" data-business-screen-target="brief" data-business-work-id="glowlab-launch">
+                      <div>
+                        <strong>Beauty serum launch</strong>
+                        <em id="business-live-subtitle">Новый запуск · 3 reels + stories</em>
+                      </div>
+                      <div>GlowLab Beauty</div>
+                      <div id="business-live-creators">5 в отборе / 2 в работе</div>
+                      <div><b class="status-chip review" id="business-live-row-chip">На проверке</b></div>
+                      <div id="business-live-updated">сегодня, 12:10</div>
+                      <div>120 000 ₽</div>
+                    </article>
+
+                    <article class="work-table-row work-table-clickable" data-business-screen-target="responses" data-business-work-id="brasa-opening">
+                      <div>
+                        <strong>Restaurant opening UGC</strong>
+                        <em>HoReCa launch</em>
+                      </div>
+                      <div>Brasa Bistro</div>
+                      <div>12 откликов</div>
+                      <div><b class="status-chip changes">Нужен отбор</b></div>
+                      <div>сегодня, 10:34</div>
+                      <div>80 000 ₽</div>
+                    </article>
+
+                    <article class="work-table-row work-table-clickable" data-business-screen-target="publish" data-business-work-id="fitbite-promo">
+                      <div>
+                        <strong>Fitness snack promo</strong>
+                        <em>Short video campaign</em>
+                      </div>
+                      <div>FitBite</div>
+                      <div>3 в работе</div>
+                      <div><b class="status-chip pending">Ждёт ERID</b></div>
+                      <div>вчера, 16:50</div>
+                      <div>54 000 ₽</div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel business-screen-panel" data-business-screen="brief">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Бриф кампании</span>
+                      <h3 id="business-detail-title">Beauty serum launch · карточка кампании</h3>
+                    </div>
+                  </div>
+
+                  <div class="order-detail-layout">
+                    <article class="order-detail-hero">
+                      <div class="order-detail-title-row">
+                        <div>
+                          <span class="detail-badge live" id="business-detail-badge">Активная кампания</span>
+                          <strong id="business-detail-subtitle">GlowLab Beauty · запуск новой линейки</strong>
+                          <p id="business-detail-description">Кампания на 3 reels и stories pack с нативной подачей. Основная цель — получить живые UGC-ролики под Instagram и Telegram.</p>
+                        </div>
+                        <div class="order-detail-price">
+                          <span>Бюджет кампании</span>
+                          <strong id="business-detail-budget">120 000 ₽</strong>
+                          <em id="business-detail-budget-note">включая резерв под выплаты и пост-кампейн этап</em>
+                        </div>
+                      </div>
+
+                      <div class="order-detail-meta">
+                        <article>
+                          <span>Отклики до</span>
+                          <strong id="business-detail-deadline-apply">6 июля</strong>
+                        </article>
+                        <article>
+                          <span>Сдача роликов</span>
+                          <strong id="business-detail-deadline-delivery">11 июля</strong>
+                        </article>
+                        <article>
+                          <span>Формат</span>
+                          <strong id="business-detail-format">3 reels + stories</strong>
+                        </article>
+                        <article>
+                          <span>Площадки</span>
+                          <strong id="business-detail-platform">Instagram / Telegram</strong>
+                        </article>
+                      </div>
+                    </article>
+
+                    <article class="order-detail-brief">
+                      <div class="detail-section-head">
+                        <strong>Что есть в брифе</strong>
+                      </div>
+                      <ul id="business-detail-brief-list">
+                        <li>позиционирование бренда и продукта</li>
+                        <li>референсы и tone of voice</li>
+                        <li>требования к первым секундам, CTA и caption</li>
+                        <li>маркировка: кто даёт ERID и когда его передают</li>
+                      </ul>
+                    </article>
+
+                    <article class="order-detail-upload">
+                      <div class="detail-section-head">
+                        <strong>Быстрые действия заказчика</strong>
+                        <span>Рабочая точка управления кампанией</span>
+                      </div>
+                      <div class="upload-steps-grid">
+                        <article>
+                          <strong>1. Обновить бриф</strong>
+                          <p>Скорректировать требования, бюджеты, форматы и комментарии к контенту.</p>
+                        </article>
+                        <article>
+                          <strong>2. Передать ERID</strong>
+                          <p>После приёмки ролика зафиксировать маркировку и инструкцию к размещению.</p>
+                        </article>
+                        <article>
+                          <strong>3. Контролировать публикации</strong>
+                          <p>Проверить ссылки на посты, статусы и переход работ к начислению.</p>
+                        </article>
+                      </div>
+
+                      <div class="workflow-live-card compact-live-card">
+                        <div class="detail-section-head compact-head">
+                          <strong>Публикация кампании</strong>
+                          <span>Старт сквозного сценария</span>
+                        </div>
+                        <div class="workflow-live-status">
+                          <b class="status-chip pending" id="business-campaign-chip">Черновик кампании</b>
+                          <p id="business-campaign-note">Сейчас бриф собран как карточка. Следующий реальный переход — опубликовать кампанию и открыть отклики.</p>
+                        </div>
+                        <div class="upload-form-actions">
+                          <button class="primary-btn creator-inline-btn" id="business-publish-campaign-btn" type="button">Опубликовать кампанию</button>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel business-screen-panel" data-business-screen="responses">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Отклики</span>
+                      <h3>Отбор креаторов по кампании</h3>
+                    </div>
+                  </div>
+
+                  <div class="submission-list">
+                    <article class="workflow-response-card">
+                      <div>
+                        <strong>Анна Лаврова</strong>
+                        <span>Beauty / Lifestyle · 24 завершённых заказа · рейтинг 4.9</span>
+                      </div>
+                      <b class="status-chip pending" id="business-response-chip">Ждём отклик</b>
+                    </article>
+                    <article>
+                      <div>
+                        <strong>Мария Лапина</strong>
+                        <span>UGC creator · 11 кейсов · сильный TikTok tone</span>
+                      </div>
+                      <b class="status-chip review">На рассмотрении</b>
+                    </article>
+                    <article>
+                      <div>
+                        <strong>Ирина Волкова</strong>
+                        <span>HoReCa / Lifestyle · нужен созвон по формату</span>
+                      </div>
+                      <b class="status-chip changes">Нужен ответ</b>
+                    </article>
+                  </div>
+
+                  <div class="workflow-live-card compact-live-card">
+                    <div class="detail-section-head compact-head">
+                      <strong>Решение по отклику</strong>
+                      <span>Принимаем или отклоняем креатора</span>
+                    </div>
+                    <p id="business-response-note">Когда креатор отправит заявку, здесь появится действие заказчика: принять в работу или отклонить.</p>
+                    <div class="upload-form-actions">
+                      <button class="primary-btn creator-inline-btn" id="business-accept-creator-btn" type="button">Принять креатора</button>
+                      <button class="ghost-btn creator-inline-btn" id="business-reject-creator-btn" type="button">Отклонить</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="creator-panel business-screen-panel" data-business-screen="review">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Проверка роликов</span>
+                      <h3>Что заказчик делает с присланными версиями</h3>
+                    </div>
+                  </div>
+
+                  <div class="revision-screen-layout">
+                    <article class="revision-thread-card">
+                      <div class="detail-section-head">
+                        <strong>Draft v2 от Анны Лавровой</strong>
+                        <b class="status-chip review">На проверке</b>
+                      </div>
+                      <div class="comment-thread-list">
+                        <article>
+                          <span>Проверка 1</span>
+                          <strong>Hook хороший, но CTA можно мягче</strong>
+                          <p>Заказчик видит историю версий и может вернуть понятные комментарии без потери контекста.</p>
+                        </article>
+                        <article>
+                          <span>Проверка 2</span>
+                          <strong>Нужен отдельный caption для Telegram</strong>
+                          <p>Комментарий остаётся внутри заказа и потом виден креатору в экране правок.</p>
+                        </article>
+                      </div>
+                    </article>
+
+                    <article class="revision-compare-card">
+                      <div class="detail-section-head compact-head">
+                        <strong>Решения заказчика</strong>
+                      </div>
+                      <div class="version-compare-grid">
+                        <article>
+                          <span>Вариант 1</span>
+                          <strong>Принять ролик</strong>
+                          <p>Если версия подходит, кампания движется к публикации и передаче ERID.</p>
+                        </article>
+                        <article>
+                          <span>Вариант 2</span>
+                          <strong>Вернуть правки</strong>
+                          <p>Если есть замечания, заказчик оставляет их по таймкодам и статус меняется на “есть замечания”.</p>
+                        </article>
+                      </div>
+
+                      <div class="upload-form-actions">
+                        <button class="primary-btn creator-inline-btn" id="business-approve-video-btn" type="button">Принять ролик</button>
+                        <button class="ghost-btn creator-inline-btn" id="business-request-changes-btn" type="button">Вернуть на правки</button>
+                      </div>
+                      <p id="business-review-note" class="live-action-note">Кнопки должны реально двигать заказ между статусами “на проверке” → “правки” → “принято”.</p>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel business-screen-panel" data-business-screen="publish">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Публикации и ERID</span>
+                      <h3>Контроль маркировки и подтверждения размещения</h3>
+                    </div>
+                  </div>
+
+                  <div class="publish-screen-layout">
+                    <article class="publish-status-card">
+                      <div class="detail-section-head">
+                        <strong>Fitness snack promo</strong>
+                        <b class="status-chip pending">Ждёт ERID</b>
+                      </div>
+                      <div class="publish-status-grid">
+                        <article>
+                          <span>Креатор</span>
+                          <strong>3 публикации</strong>
+                        </article>
+                        <article>
+                          <span>Маркировка</span>
+                          <strong>2/3 закрыто</strong>
+                        </article>
+                        <article>
+                          <span>Следующий шаг</span>
+                          <strong>Передать ERID</strong>
+                        </article>
+                      </div>
+                    </article>
+
+                    <article class="publish-erid-card">
+                      <div class="detail-section-head compact-head">
+                        <strong>Что должен сделать заказчик</strong>
+                      </div>
+                      <div class="erid-info-list">
+                        <article>
+                          <span>Шаг 1</span>
+                          <strong>Передать ERID</strong>
+                          <p>Зафиксировать идентификатор и инструкцию к размещению внутри заказа.</p>
+                        </article>
+                        <article>
+                          <span>Шаг 2</span>
+                          <strong>Проверить ссылку на пост</strong>
+                          <p>Убедиться, что публикация действительно вышла и маркировка стоит корректно.</p>
+                        </article>
+                        <article>
+                          <span>Шаг 3</span>
+                          <strong>Перевести к начислению</strong>
+                          <p>После подтверждения размещения работа уходит в этап пост-кампейн проверки и будущей выплаты.</p>
+                        </article>
+                      </div>
+
+                      <div class="upload-form-actions">
+                        <button class="primary-btn creator-inline-btn" id="business-send-erid-btn" type="button">Передать ERID</button>
+                        <button class="ghost-btn creator-inline-btn" id="business-confirm-post-btn" type="button">Подтвердить публикацию</button>
+                      </div>
+                      <p id="business-publish-note" class="live-action-note">После приёмки ролика заказчик переводит работу в маркировку, потом подтверждает ссылку на пост и отправляет её в начисление.</p>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="creator-panel business-screen-panel" data-business-screen="finance">
+                  <div class="creator-panel-head">
+                    <div>
+                      <span class="panel-kicker">Финансы</span>
+                      <h3>Бюджет кампаний, резервы и будущие выплаты</h3>
+                    </div>
+                  </div>
+
+                  <div class="wallet-cards">
+                    <article>
+                      <span>Баланс</span>
+                      <strong>184 500 ₽</strong>
+                    </article>
+                    <article>
+                      <span>В резерве</span>
+                      <strong>42 000 ₽</strong>
+                    </article>
+                    <article>
+                      <span>К начислению</span>
+                      <strong>27 500 ₽</strong>
+                    </article>
+                  </div>
+
+                  <div class="wallet-history">
+                    <div class="wallet-history-head">
+                      <strong>Последние операции</strong>
+                      <span>Пополнения и движения по кампаниям</span>
+                    </div>
+                    <div class="wallet-table">
+                      <article>
+                        <span>-9 000 ₽ · резерв под Fitness snack promo</span>
+                        <em>после подтверждения публикации</em>
+                      </article>
+                      <article>
+                        <span>+100 000 ₽ · пополнение баланса</span>
+                        <em>3 июля</em>
+                      </article>
+                      <article>
+                        <span>-24 000 ₽ · выплата по Restaurant opening UGC</span>
+                        <em>1 июля</em>
+                      </article>
+                    </div>
+                  </div>
+
+                  <div class="workflow-live-card wallet-live-card">
+                    <div class="detail-section-head compact-head">
+                      <strong>Статус выплаты</strong>
+                      <span>Последний переход заказчика</span>
+                    </div>
+                    <div class="workflow-live-status">
+                      <b class="status-chip pending" id="business-payout-chip">Начисление ещё не открыто</b>
+                      <p id="business-payout-note">Пока публикация не подтверждена, деньги должны оставаться в резерве. После подтверждения — перейти в начисление и затем в выплату.</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
