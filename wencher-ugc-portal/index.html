@@ -12,7 +12,7 @@
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header">
+    <header class="site-header landing-only">
       <div class="container header-row">
         <a class="brand" href="#top" aria-label="Wencher UGC Factory">
           <img src="./assets/wencher-logo.png" alt="Wencher" />
@@ -36,7 +36,7 @@
     </header>
 
     <main id="top">
-      <section class="hero">
+      <section class="hero landing-only">
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">Wencher Agency × creator economy</p>
@@ -93,7 +93,7 @@
         </div>
       </section>
 
-      <section class="proof-strip">
+      <section class="proof-strip landing-only">
         <div class="container proof-grid">
           <article>
             <strong>Бизнес</strong>
@@ -106,7 +106,7 @@
         </div>
       </section>
 
-      <section class="section" id="features">
+      <section class="section landing-only" id="features">
         <div class="container">
           <div class="section-head">
             <p class="eyebrow">Что закрывает платформа</p>
@@ -133,7 +133,7 @@
         </div>
       </section>
 
-      <section class="section section-dark" id="roles">
+      <section class="section section-dark landing-only" id="roles">
         <div class="container">
           <div class="section-head narrow">
             <p class="eyebrow">Один аккаунт — несколько режимов</p>
@@ -171,7 +171,7 @@
         </div>
       </section>
 
-      <section class="section" id="workflow">
+      <section class="section landing-only" id="workflow">
         <div class="container">
           <div class="section-head">
             <p class="eyebrow">Как это работает</p>
@@ -208,7 +208,7 @@
         </div>
       </section>
 
-      <section class="section auth-section" id="auth">
+      <section class="section auth-section landing-only" id="auth">
         <div class="container auth-grid">
           <div class="auth-copy">
             <p class="eyebrow">Регистрация</p>
@@ -242,6 +242,7 @@
 
               <p class="form-message" id="form-message" aria-live="polite"></p>
               <button class="primary-btn form-btn" type="submit" id="submit-button">Создать аккаунт</button>
+              <button class="ghost-btn form-btn dashboard-entry-btn" type="button" id="enter-dashboard-btn" hidden>Войти в кабинет</button>
             </form>
 
             <div class="workspace-preview">
@@ -291,7 +292,23 @@
         </div>
       </section>
 
-      <section class="section creator-desk-section" id="creator-desk">
+      <header class="dashboard-header app-only">
+        <div class="container dashboard-header-row">
+          <a class="brand dashboard-brand" href="#" aria-label="Wencher UGC Factory">
+            <img src="./assets/wencher-logo.png" alt="Wencher" />
+            <span>Личный кабинет</span>
+          </a>
+
+          <div class="dashboard-mode-switch" role="tablist" aria-label="Режим кабинета">
+            <button class="mode-toggle active" data-mode="creator" type="button">Я креатор</button>
+            <button class="mode-toggle" data-mode="business" type="button">Я заказчик</button>
+          </div>
+
+          <button class="ghost-btn dashboard-logout-btn" id="dashboard-logout-btn" type="button">Выйти</button>
+        </div>
+      </header>
+
+      <section class="section creator-desk-section app-only" id="creator-desk">
         <div class="container creator-desk-shell glass-card">
           <div class="creator-desk-head">
             <div>
@@ -1127,7 +1144,7 @@
         </div>
       </section>
 
-      <section class="section business-desk-section" id="business-desk">
+      <section class="section business-desk-section app-only" id="business-desk">
         <div class="container creator-desk-shell glass-card business-shell">
           <div class="creator-desk-head">
             <div>

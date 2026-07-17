@@ -31,6 +31,7 @@ body {
     radial-gradient(circle at right center, rgba(47, 212, 199, 0.08), transparent 24%),
     linear-gradient(180deg, #050505 0%, #0d0d0d 48%, #060606 100%);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 img {
@@ -57,6 +58,87 @@ button {
 
 .page-shell {
   min-height: 100vh;
+}
+
+.app-only {
+  display: none;
+}
+
+body.dashboard-mode .landing-only {
+  display: none !important;
+}
+
+body.dashboard-mode .app-only {
+  display: block;
+}
+
+body.app-mode-creator .business-desk-section,
+body.app-mode-business .creator-desk-section {
+  display: none;
+}
+
+.dashboard-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 5, 5, 0.9);
+  backdrop-filter: blur(18px);
+}
+
+.dashboard-header-row {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.dashboard-brand img {
+  width: 128px;
+}
+
+.dashboard-mode-switch {
+  display: flex;
+  gap: 8px;
+  padding: 5px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dashboard-mode-switch .mode-toggle {
+  min-width: 132px;
+}
+
+.dashboard-entry-btn {
+  margin-top: 10px;
+}
+
+body.dashboard-mode .creator-desk-section,
+body.dashboard-mode .business-desk-section {
+  padding: 28px 0 56px;
+}
+
+.creator-main,
+.creator-panel,
+.creator-content-grid,
+.creator-layout,
+.business-main,
+.business-content-grid,
+.work-table-row > div,
+.submission-list article > div {
+  min-width: 0;
+}
+
+.creator-panel,
+.creator-profile-card,
+.creator-withdraw-card,
+.order-detail-layout,
+.upload-screen-layout,
+.revision-screen-layout,
+.publish-screen-layout {
+  overflow-wrap: anywhere;
 }
 
 .container {
@@ -1295,6 +1377,11 @@ button {
   font-weight: 700;
 }
 
+.work-table-row > div {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .work-table-row em {
   display: block;
   font-style: normal;
@@ -1877,6 +1964,16 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .creator-sidebar {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: start;
+  }
+
+  .creator-sidebar .creator-menu {
+    grid-row: span 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .creator-desk-head {
     flex-direction: column;
   }
@@ -1928,6 +2025,35 @@ button {
 
   .site-header {
     position: static;
+  }
+
+  .dashboard-header-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .dashboard-brand {
+    width: auto;
+  }
+
+  .dashboard-mode-switch {
+    order: 3;
+    width: 100%;
+  }
+
+  .dashboard-mode-switch .mode-toggle {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .creator-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .creator-sidebar .creator-menu {
+    grid-row: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .hero {
@@ -1995,10 +2121,20 @@ button {
   .fake-chip-row,
   .upload-form-actions,
   .attached-files-list article,
-  .work-sort-row,
-  .creator-flow-nav {
+  .work-sort-row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .creator-flow-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+  }
+
+  .creator-flow-step {
+    flex: 0 0 auto;
   }
 
   .work-table-row {
@@ -2026,6 +2162,79 @@ button {
     display: none;
   }
 
+  .dashboard-header-row {
+    justify-content: space-between;
+  }
+
+  .dashboard-brand {
+    width: auto;
+  }
+
+  .dashboard-brand img {
+    width: 108px;
+  }
+
+  .dashboard-logout-btn {
+    padding: 10px 14px;
+  }
+
+  body.dashboard-mode .creator-desk-section,
+  body.dashboard-mode .business-desk-section {
+    padding-top: 14px;
+  }
+
+  .creator-desk-shell {
+    width: min(calc(100% - 16px), var(--container));
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+  .creator-desk-head {
+    margin-bottom: 20px;
+  }
+
+  .creator-desk-head h2 {
+    font-size: clamp(1.45rem, 7vw, 2rem);
+  }
+
+  .creator-sidebar .creator-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .creator-panel,
+  .creator-profile-card,
+  .creator-withdraw-card,
+  .creator-search-card,
+  .wallet-history,
+  .withdraw-flow-note,
+  .upload-flow-card,
+  .compliance-note,
+  .work-table-shell,
+  .work-table-note,
+  .creator-stats-grid article,
+  .wallet-cards article,
+  .compliance-grid article,
+  .order-card,
+  .submission-list article,
+  .wallet-table article,
+  .order-detail-hero,
+  .order-detail-brief,
+  .order-detail-upload,
+  .order-detail-compliance,
+  .order-detail-meta article,
+  .upload-steps-grid article,
+  .compliance-flow-list article,
+  .compliance-checklist-card,
+  .submission-version-table article {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .status-chip {
+    white-space: normal;
+    text-align: center;
+  }
+
   .stat-card {
     position: static;
     max-width: none;
@@ -2049,5 +2258,9 @@ button {
   .role-switch,
   .mode-toggle {
     min-width: 100%;
+  }
+
+  .dashboard-mode-switch .mode-toggle {
+    min-width: 0;
   }
 }

@@ -6,6 +6,8 @@ const emailInput = document.getElementById('email-input');
 const passwordInput = document.getElementById('password-input');
 const confirmPasswordInput = document.getElementById('confirm-password-input');
 const policyInput = document.getElementById('policy-input');
+const enterDashboardButton = document.getElementById('enter-dashboard-btn');
+const dashboardLogoutButton = document.getElementById('dashboard-logout-btn');
 const modeButtons = Array.from(document.querySelectorAll('.mode-toggle'));
 const modeCards = Array.from(document.querySelectorAll('.mode-card'));
 const modeLead = document.getElementById('mode-lead');
@@ -297,6 +299,7 @@ const businessWorkDetailsMap = {
 
 let state = {
   mode: 'creator',
+  authenticated: false,
   screen: 'dashboard',
   businessScreen: 'dashboard',
   workflow: {
@@ -746,6 +749,24 @@ function renderModePreview() {
   modeList.innerHTML = content.items.map((item) => `<li>${item}</li>`).join('');
 }
 
+function renderAppMode() {
+  document.body.classList.toggle('dashboard-mode', state.authenticated);
+  document.body.classList.toggle('app-mode-creator', state.authenticated && state.mode === 'creator');
+  document.body.classList.toggle('app-mode-business', state.authenticated && state.mode === 'business');
+}
+
+function enterDashboard() {
+  state.authenticated = true;
+  renderAppMode();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function leaveDashboard() {
+  state.authenticated = false;
+  renderAppMode();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function renderCreatorScreen() {
   screenPanels.forEach((panel) => {
     panel.classList.toggle('active', panel.dataset.screen === state.screen);
@@ -888,6 +909,7 @@ function validateForm() {
 function syncMode(mode) {
   state.mode = mode;
   renderModePreview();
+  renderAppMode();
 
   if (formMessage.classList.contains('success')) {
     showMessage('success', `Аккаунт создан без привязки к роли. После входа можно начать как ${state.mode === 'creator' ? 'креатор' : 'бизнес'} и потом переключаться между режимами.`);
@@ -944,8 +966,14 @@ businessWorkTableRows.forEach((row) => {
 
 authForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  validateForm();
+  if (validateForm()) {
+    enterDashboardButton.hidden = false;
+    submitButton.hidden = true;
+  }
 });
+
+enterDashboardButton?.addEventListener('click', enterDashboard);
+dashboardLogoutButton?.addEventListener('click', leaveDashboard);
 
 [nameInput, emailInput, passwordInput, confirmPasswordInput, policyInput].forEach((input) => {
   input.addEventListener('input', () => {
@@ -957,6 +985,7 @@ authForm.addEventListener('submit', (event) => {
 
 submitButton.textContent = 'Создать аккаунт';
 renderModePreview();
+renderAppMode();
 renderCreatorScreen();
 renderBusinessScreen();
 renderWorkflow();
